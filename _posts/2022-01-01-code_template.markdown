@@ -1,7 +1,7 @@
 ---
 # multilingual page pair id, this must pair with translations of this page. (This name must be unique)
 lng_pair: id_What_is_this
-title: "Welcome to Jekyll!"
+title: "Code Template"
 
 # post specific
 # if not specified, .name will be used from _data/owner/[language].yml
