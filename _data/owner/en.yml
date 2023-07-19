@@ -2,7 +2,7 @@
 # Owner's Personal Information
 ###########################################################
 # This is your brand name
-brand: "SeungJun Moon"
+brand: "SeungJun"
 
 # text below the brand name
 brand_sub_text: "Seungjun Moon's Blog"
@@ -48,7 +48,7 @@ meta_common_description: "Your meta description."
 # the order of the items will be shown as here.
 # comment to remove any contact item
 contacts:
-  - github: "https://github.com/seungjun-moon"
+  - github: "seungjun-moon"
   - email: "june1034@gmail.com"
   #- linkedin: ""
   #- twitter: ""
