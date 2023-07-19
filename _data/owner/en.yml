@@ -5,7 +5,7 @@
 brand: "SeungJun Moon"
 
 # text below the brand name
-brand_sub_text: "Hello I am Seungjun Moon"
+brand_sub_text: "Seungjun Moon's Blog"
 
 # used for seo meta post author (if it's not defined in post)
 name: "AI Researcher"
@@ -13,13 +13,13 @@ name: "AI Researcher"
 # home page top header texts
 home:
   # you can also use $site_brand, $site_greetings, $site_welcome in line1 and line2 for replacing texts.
-  top_header_line1: "Hello World"
+  top_header_line1: ""
   # if commented, top header will be a single line
-  top_header_line2: "Thank you for visiting."
+  top_header_line2: ""
 
 # about page sub title
 about:
-  sub_title: "$site_sample"
+  sub_title: "Hello"
 
 # if you don't want to add copyright year, comment or leave it blank.
 # the year during which the claimed copyright for the work was first asserted.
