@@ -7,7 +7,7 @@ title: 한국어 테스트
 # if not specified, .name will be used from _data/owner/[language].yml
 #author: ""
 # multiple category is not supported
-category: 논문
+category: auto generated
 # multiple tag entries are possible
 tags: [jekyll, sample]
 # thumbnail image for post
