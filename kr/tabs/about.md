@@ -41,4 +41,6 @@ img: "/assets/img/home/profile.jpg"
 {%- include util/auto-content-generator.liquid -%}
 {{ website_info_text_first }}
 
+안녕하세요. 문승준 입니다.
+
 {{ website_info_text_second }}

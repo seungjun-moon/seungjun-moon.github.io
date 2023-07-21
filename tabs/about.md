@@ -41,4 +41,6 @@ img: "/assets/img/home/profile.jpg"
 {%- include util/auto-content-generator.liquid -%}
 {{ website_info_text_first }}
 
+Hello. This is Seungjun Moon from South Korea.
+
 {{ website_info_text_second }}
