@@ -50,7 +50,7 @@ Diffusion 기반 생성 모델이 최근 크게 주목 받고 있다. Diffusion 
 ## VAE의 목적
 여느 생성 모델과 마찬가지로 VAE 또한 실제 데이터와 유사한 데이터를 생성하는 것을 목표로 한다. 이를 위한 가장 간단한 구조로는 아래와 같은 구조를 생각해볼 수 있을 것이다.
 
-![such a lovely place](/assets/img/posts/vae1/structure.png)
+![Alt text](/assets/img/posts/vae1/structure.png){: width="60%"",height="60%""}{:data-align="center"}
 
 $math equation$
 $log_{10}x = logx$

@@ -57,6 +57,7 @@ markdown: kramdown
 kramdown:
   # This is default for GitHub Pages sites and cannot be changed.
   syntax_highlighter: rouge
+incremental: false #sj
 
 ###########################################################
 # Plugins (Plugins supported by GitHub Pages https://pages.github.com/versions/)
