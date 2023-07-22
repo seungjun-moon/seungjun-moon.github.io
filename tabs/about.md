@@ -42,15 +42,15 @@ Hello. This is Seungjun Moon from South Korea.
 
 ## Publications
 
-**WaGI : Wavelet-based GAN Inversion for Preserving High-frequency Image Details**
-_Seungjun Moon^\*_, Chaewon Kim^\*, Gyeong-Moon Park
+**WaGI : Wavelet-based GAN Inversion for Preserving High-frequency Image Details**  
+<u>Seungjun Moon\*</u>, Chaewon Kim\*, Gyeong-Moon Park
 
-**IntereStyle: Encoding an Interest Region for Robust StyleGAN Inversion**
-_Seungjun Moon_, Gyeong-Moon Park
+**IntereStyle: Encoding an Interest Region for Robust StyleGAN Inversion**  
+<u>Seungjun Moon</u>, Gyeong-Moon Park  
 European Computer Vision Association (ECCV), 2022
 
-**MASKER: Masked Keyword Regularization for Reliable Text Classification**
-_Seungjun Moon^*_, Sangwoo Mo^* , Kimin Lee, Jaeho Lee, Jinwoo Shin
+**MASKER: Masked Keyword Regularization for Reliable Text Classification**  
+<u>Seungjun Moon</u>\*, Sangwoo Mo\* , Kimin Lee, Jaeho Lee, Jinwoo Shin  
 AAAI Conference on Artificial Intelligence (AAAI), 2021
 
 ## Education
