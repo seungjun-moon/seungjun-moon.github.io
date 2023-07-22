@@ -42,18 +42,20 @@ date: 2023-07-21 08:11:06 +0900
 
 <!-- outline-start -->
 
-Diffusion 기반 생성 모델이 최근 크게 주목 받고 있다. Diffusion 모델을 공부하다 보면 피해갈 수 없는 게 바로 Variational AutoEncoder (VAE) 모델이다. Diffusion 모델을 제대로 이해하기 위해 최근 뒤늦게나마 VAE를 공부했다. 이번 포스팅에서는 이 모델의 아이디어와 학습 방법 등을 **최대한 수식을 배제하고** 간단하게 설명해보려 한다.
+Diffusion 기반 생성 모델이 최근 크게 주목 받고 있다. Diffusion 모델을 공부하다 보면 피해갈 수 없는 게 바로 Variational AutoEncoder (VAE) 모델이다. Diffusion 모델을 제대로 이해하기 위해 최근 뒤늦게나마 VAE를 공부했다. 앞으로의 포스팅을 통해 VAE의 아이디어와 학습 방법 등을 **최대한 수식을 배제하고** 간단하게 설명해보려 한다. 이번 포스팅에서는 VAE의 등장 배경과 아이디어를 다뤄보려 한다.
 
 <!-- outline-end -->
 
 ## VAE의 목적
-여느 생성 모델과 마찬가지로 VAE 또한 실제 데이터와 유사한 데이터를 생성하는 것을 목표로 한다. 이를 위한 가장 간단한 구조로는 아래와 같은 구조를 생각해볼 수 있을 것이다.
+여느 생성 모델과 마찬가지로 VAE 또한 실제 데이터와 유사한 데이터를 생성하는 것을 목표로 한다. 이를 위한 가장 간단하게는 아래와 같은 구조를 생각해볼 수 있을 것이다.
 
 ![Alt text](/assets/img/posts/vae1/structure.png){: width="50%"",height="50%""}{:data-align="center"}
 
-이 때, 우리는 $z$가 generator $g_{\theta}$를 거쳐서 생성 결과 $X$를 만들어낸다 할 수 있다. VAE(뿐만 아니라 AutoEncoder 역시) 이 출력값 아래와 같은 Gaussian 분포를 따른다고 가정하곤 한다.
+이 때, 우리는 $z$가 generator $g_{\theta}$를 거쳐서 생성 결과 $X$를 만들어낸다 할 수 있다. VAE(뿐만 아니라 AutoEncoder 역시)의 출력값이 아래와 같은 Gaussian 분포를 따른다고 가정하곤 한다.
 
-$$P(X|z;\theta)=\mathcal{N}(X|f(z\theta), \sigma^{2}\dot I)$$
+$P(X|z;\theta)=\mathcal{N}(X|g_{\theta}(z), \sigma^{2}\dot I)$
+
+풀어서 설명하면, $z$가 주어졌을 때 출력값 $X$의 확률 분포는 네트워크의 출력 값 $g_{\theta}(z)$을 평균으로 하고, $\sigma^{2}\dot I$을 분산으로 가지는 Gaussian 분포를 따른다는 뜻이다. 하지만 네트워크의 출력 값은 $g_{\theta}(z)$로 deterministic하게 정해지지 않는가? 물론 그렇지만, 이는 학습을 위한 전략이다. VAE는 학습 처음부터 (아마 나중에도) 주어진 학습 sample과 완전히 똑같은 출력 값을 만들진 못한다. 그러나 유사한 출력 값을 만들어나갈 수 있도록 적절한 loss를 디자인해줘야 하고, gradient descent를 통해 이를 줄여나가는 방식으로 학습이 진행되어야 한다. 그러나 네트워크의 출력 값이 deterministic하다고 해서, $P(X|z;\theta)$의 확률 분포를 Dirac delta 함수와 같이 만들어버리면, 우리는 Likelihood를 최대화하기 위한 gradient descent를 행할 수 없게 된다.
 
 
 $log_{10}x = logx$
