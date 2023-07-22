@@ -51,22 +51,15 @@ Diffusion 기반 생성 모델이 최근 크게 주목 받고 있다. Diffusion 
 
 ![Alt text](/assets/img/posts/vae1/structure.png){: width="50%"",height="50%""}{:data-align="center"}
 
-이 때, 우리는 $z$가 generator $g_{\theta}$를 거쳐서 생성 결과 $X$를 만들어낸다 할 수 있다. VAE(뿐만 아니라 AutoEncoder 역시)의 출력값이 아래와 같은 Gaussian 분포를 따른다고 가정하곤 한다.
+$z$는 generator $g_{\theta}$를 거쳐서 생성 결과 $g_{\theta}(z)$를 만들어낸다. 우리의 목적은 학습 데이터 속 $X$의 확률을 최대화하는 것이다. 모든 latent $z$를 고려한 $X$의 확률은 아래와 같다.
 
-$P(X\|z;\theta)=\mathcal{N}(X\|g_{\theta}(z), \sigma^{2}\dot I)$
+$P(X)=\int P(X\|z;\theta)P(z)dz$
 
-풀어서 설명하면, $z$가 주어졌을 때 출력값 $X$의 확률 분포는 네트워크의 출력 값 $g_{\theta}(z)$을 평균으로 하고, $\sigma^{2}\dot I$을 분산으로 가지는 Gaussian 분포를 따른다는 뜻이다. 하지만 네트워크의 출력 값은 $g_{\theta}(z)$로 deterministic하게 정해지지 않는가? 물론 그렇지만, 이는 학습을 위한 전략이다. VAE는 학습 처음부터 (아마 나중에도) 주어진 학습 sample과 완전히 똑같은 출력 값을 만들진 못한다. 그러나 유사한 출력 값을 만들어나갈 수 있도록 적절한 loss를 디자인해줘야 하고, gradient descent를 통해 이를 줄여나가는 방식으로 학습이 진행되어야 한다. 그러나 네트워크의 출력 값이 deterministic하다고 해서, $P(X\|z;\theta)$의 확률 분포를 Dirac delta 함수와 같이 만들어버리면, 우리는 Likelihood를 최대화하기 위한 gradient descent를 행할 수 없게 된다.
+$z$와 $\theta$가 주어지면 네트워크의 출력값은 deterministic한데, $P(X\|z;\theta)$라는 개념은 어떻게 이해하면 될까? VAE(뿐만 아니라 AutoEncoder 역시)의 출력값이(실제와는 다르게)아래와 같은 Gaussian 분포(Non-deterministic)를 따른다고 가정하곤 한다.
 
+$P(X\|z;\theta)=\mathcal{N}(X\|g_{\theta}(z), \sigma^{2}\*I)$
 
-$log_{10}x = logx$
-
-### Heading 3
-
-#### Heading 4
-
-##### Heading 5
-
-###### Heading 6
+풀어서 설명하면, $z$가 주어졌을 때 출력값 $X$의 확률 분포는 네트워크의 출력 값 $g_{\theta}(z)$을 평균으로 하고, $\sigma^{2}\*I$을 분산으로 가지는 Gaussian 분포를 따른다는 뜻이다. 하지만 **네트워크의 출력 값은 $g_{\theta}(z)$로 deterministic하게 정해지지 않는가?** 물론 그렇지만, 이는 학습을 위한 전략이다. VAE는 학습 처음부터 (아마 나중에도) 주어진 학습 sample과 완전히 똑같은 출력 값을 만들진 못한다. 우리는 gradient descent로부터 유사한 출력 값을 만들어나갈 수 있도록 적절한 loss를 디자인해줘야 한다. 그러나 네트워크의 출력 값이 deterministic하다고 해서, $P(X\|z;\theta)$의 확률 분포를 Dirac delta 함수로 가정하면 Likelihood를 최대화하기 위한 gradient descent를 행할 수 없다. 따라서 임의로 네트워크의 출력 값이 Gaussian 분포를 따른다고 가정하는 것이고, 이 때 Likelihood를 최대화 하도록 하는 손실 함수가 우리가 널리 알고 있는 Euclidean distance, 바로 $L_{2}$ 손실 함수이다. 
 
 ***
 
