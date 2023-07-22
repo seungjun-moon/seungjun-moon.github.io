@@ -30,6 +30,9 @@ layout: util/compress
   <head>
     {% include default/header/header.html %}
     {% include default/css-include.html %}
+    {% if page.use_math %}
+      {% include mathjax_support.html %}
+    {% endif %}
   </head>
 
   <body {{ default_dark }}>

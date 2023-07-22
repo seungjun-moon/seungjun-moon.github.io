@@ -10,6 +10,7 @@ author: Mr. Green's Workshop
 category: jekyll
 # multiple tag entries are possible
 tags: [jekyll, sample, example post]
+use_math: true
 # thumbnail image for post
 img: ":post_pic1.jpg"
 # disable comments on this page
