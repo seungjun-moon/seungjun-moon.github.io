@@ -12,7 +12,7 @@ category: jekyll
 tags: [jekyll, sample, example post]
 use_math: true
 # thumbnail image for post
-img: ":post_pic1.jpg"
+img: "/assets/img/posts/vae1/structure2.png"
 # disable comments on this page
 #comments_disable: true
 
