@@ -40,11 +40,23 @@ img: "/assets/img/home/profile.jpg"
 
 안녕하세요. 문승준입니다.
 
+## Publications
+
+**WaGI : Wavelet-based GAN Inversion for Preserving High-frequency Image Details**  
+<u>Seungjun Moon</u>\*, Chaewon Kim\*, Gyeong-Moon Park
+
+**IntereStyle: Encoding an Interest Region for Robust StyleGAN Inversion**  
+<u>Seungjun Moon</u>, Gyeong-Moon Park  
+European Computer Vision Association (**ECCV**), 2022
+
+**MASKER: Masked Keyword Regularization for Reliable Text Classification**  
+<u>Seungjun Moon</u>\*, Sangwoo Mo\* , Kimin Lee, Jaeho Lee, Jinwoo Shin  
+AAAI Conference on Artificial Intelligence (**AAAI**), 2021
+
 ## Education
 
 - **KAIST**, M.S. in Electrical Engineering (advisor: Prof. Jinwoo Shin) / Aug 2020
 - **KAIST**, B.S. in Electrical Engineering & Mathmatical Sciences (minor) / Feb 2019
 - **Sejong Science High School** / Feb 2014
 
-## Publications
 ## Work Experience
