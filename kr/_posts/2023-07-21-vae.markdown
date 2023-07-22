@@ -53,6 +53,7 @@ Diffusion 기반 생성 모델이 최근 크게 주목 받고 있다. Diffusion 
 ![such a lovely place](/assets/img/posts/vae1/structure.png)
 
 $math equation$
+$log_{10}x = logx$
 
 ### Heading 3
 
