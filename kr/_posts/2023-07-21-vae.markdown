@@ -43,16 +43,19 @@ date: 2023-07-21 08:11:06 +0900
 <!-- outline-start -->
 
 Diffusion 기반 생성 모델이 최근 크게 주목 받고 있다. Diffusion 모델을 공부하다 보면 피해갈 수 없는 게 바로 Variational AutoEncoder (VAE) 모델이다. Diffusion 모델을 제대로 이해하기 위해 최근 뒤늦게나마 VAE를 공부했다. 이번 포스팅에서는 이 모델의 아이디어와 학습 방법 등을 **최대한 수식을 배제하고** 간단하게 설명해보려 한다.
-아래 포스팅 내용은 
 
 <!-- outline-end -->
 
 ## VAE의 목적
 여느 생성 모델과 마찬가지로 VAE 또한 실제 데이터와 유사한 데이터를 생성하는 것을 목표로 한다. 이를 위한 가장 간단한 구조로는 아래와 같은 구조를 생각해볼 수 있을 것이다.
 
-![Alt text](/assets/img/posts/vae1/structure.png){: width="60%"",height="60%""}{:data-align="center"}
+![Alt text](/assets/img/posts/vae1/structure.png){: width="50%"",height="50%""}{:data-align="center"}
 
-$math equation$
+이 때, 우리는 $z$가 generator $g_{\theta}$를 거쳐서 생성 결과 $X$를 만들어낸다 할 수 있다. VAE(뿐만 아니라 AutoEncoder 역시) 이 출력값 아래와 같은 Gaussian 분포를 따른다고 가정하곤 한다.
+
+$$P(X|z;\theta)=\mathcal{N}(X|f(z\theta), \sigma^{2}\dot I)$$
+
+
 $log_{10}x = logx$
 
 ### Heading 3
