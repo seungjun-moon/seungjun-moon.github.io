@@ -40,10 +40,12 @@ img: "/assets/img/home/profile.jpg"
 
 Hello. This is Seungjun Moon from South Korea.
 
-# Education
-tbd
-# Publications
-tbd
-# Work Experience
-tbd
+## Education
+
+- **KAIST**, M.S. in Electrical Engineering (advisor: Prof. Jinwoo Shin) / Aug 2020
+- **KAIST**, B.S. in Electrical Engineering & Mathmatical Sciences (minor) / Feb 2019
+- **Sejong Science High School** / Feb 2014
+
+## Publications
+## Work Experience
 
