@@ -39,7 +39,7 @@ img: ":home-heading.jpg"
 
 {%- comment -%} Please delete below and place your page content here {%- endcomment -%}
 
-{%- include util/auto-content-generator.liquid -%}
+안녕하세요. 제 블로그에 오신 걸 환영합니다.
 {{ website_info_text_first }}
 
 {{ website_info_text_second }}
