@@ -81,8 +81,36 @@ $P(X|z;\theta)=\mathcal{N}(X|g_{\theta}(z), \sigma^{2}*I)$
 
 > $X$를 보여줄테니 $X$와 유의미하게 유사한 sample을 만들 수 있는 확률분포 $p(z\|X)$를 만들고, 여기에서 sampling을 하자.
 
-즉, 기존처럼 완전히 독립적인 분포 $p(z)$에서부터 $z$를 sampling하는 것이 아닌, $X$에 따라 변하는 $z$의 분포에서 sampling하는 것이 VAE의 핵심이다. 이러한 이상적인 sampling 함수를 만들기 위해 우리는 posterior, 즉 encoder $q_{\phi}$를 학습하게 된다.
+즉, 기존처럼 완전히 독립적인 분포 $p(z)$에서부터 $z$를 sampling하는 것이 아닌, $X$에 따라 변하는 $z$의 분포에서 sampling하는 것이 VAE의 핵심이다. 이러한 이상적인 sampling 함수를 만들기 위해 우리는 $X$로 부터 유래된 $z$를 구하기 위한, 아래와 같은 구조를 취하게 된다.
 
 ![Alt text](/assets/img/posts/vae1/structure2.png){: width="70%""}{:data-align="center"}
 
-즉, VAE는 sampling을 영리하게 하자는 아이디어에서 출발해서 어쩌다보니 AutoEncoder와 비슷한 구조를 가지게 된 것이지, 근본적으로 그 출발점은 AutoEncoder와 굉장히 다르다. 다음 포스팅에서는 VAE를 어떻게 학습시키는지에 대해서 알아볼 것이다.
+앞서 설명한 구조와 다른 점은 posterior, 즉 encoder $q_{\phi}$를 통해 $z$를 생성한다는 점이다. 만들어 놓고 보니 AutoEncoder와 구조가 비슷하다. 즉, VAE는 sampling을 영리하게 하자는 아이디어에서 출발해서 어쩌다 보니 AutoEncoder와 비슷한 구조를 가지게 된 것이지, 근본적으로 그 출발점은 AutoEncoder와 굉장히 다르다.
+
+***
+
+## ELBO
+
+VAE는 AutoEncoder와 어떻게 다르게 학습되는 것일까? 많은 생성 모델들처럼, VAE 역시 maximum likelihood, $log(p(x))$를 최대화하는 방향으로 접근한다.
+
+$log(p(x))$는 전개하면 아래와 같다.
+
+![Alt text](/assets/img/posts/vae1/elbo.png){: width="90%""}{:data-align="center"}
+
+<!-- 편의상 $\int q_{\phi}(z\|x)log p_{\theta}(x\|z)$를 $A$, $KL(q_{\phi(z\|x)\|\|p(z)}$를 $B$, $KL(q_{\phi(z\|x)\|\|p_{\theta}(z\|x)}$를 $C$라고 해보자.
+ -->
+
+각각의 항을 살펴보자.
+
+우선 첫 번째 항은 $x$가 입력으로 들어왔을 때, 나올 수 있는 $z$의 분포 $q_{\phi}(z\|x)$에 대해서 $log p_{\theta}(x\|z)$를 적분한 값이다. 쉽게 설명하면, **$x$가 encoder의 입력으로 들어왔을 때, decoder의 출력이 얼마나 $x$에 가까운지를 설명**하는 항이다. 그래서 이 부분을 **reconstruction error**라고 한다.
+
+두 번째 항의 경우 encoder를 통해 재정의된 $z$의 분포 $q_{\phi}(z\|x)$와 원래 $z$의 분포 사이의 거리를 [KL-divergence](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence)로 표현한 값이다. $q_{\phi}(z\|x)$를 구하는 방법은 뒤에서 reparameterization trick을 설명하며 다시 다룰 것이다. 두 번째 항의 경우, 새롭게 정의된 $z$의 분포인 posterior가 원래 $z$의 분포인 prior와 지나치게 많이 달라지는 것을 방지한다. 그래서 이 부분을 **regularization error**라고 한다.
+
+마지막 항의 경우 우리가 알 수 없는 $p_{\theta}(z\|x)$라는 값이 포함되어 있다. 그러나 우리는 KL divergence는 항상 양수라는 점을 활용하여, 아래와 같은 식을 유도할 수 있다.
+
+$log p_{\theta}(x) \geq \text{Reconstruction Error} + \text{Regularization Error}$
+
+이 때 reconstruction error와 regularization error의 합을 **Evidence Lower BOund(ELBO)**라 부르며, 이를 maximize함으로써 likelihood를 maximize한다.
+
+
+
