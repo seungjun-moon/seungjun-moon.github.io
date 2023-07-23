@@ -56,7 +56,7 @@ AAAI Conference on Artificial Intelligence (**AAAI**), 2021
 ## Education
 
 - **KAIST** 전기 및 전자 공학과 석사 졸업 (지도 교수: 신진우) / Aug 2020
-- **KAIST** 전기 및 전자 공학과 및 수리과학과(부전공) 졸업 / Feb 2019
+- **KAIST** 전기 및 전자 공학과 및 수리과학과(부전공) 학사 졸업 / Feb 2019
 - **세종과학고등학교** 졸업 (2년 조기졸업) / Feb 2014
 
-## Work Experience
+<!-- ## Work Experience -->

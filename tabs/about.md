@@ -55,9 +55,9 @@ AAAI Conference on Artificial Intelligence (**AAAI**), 2021
 
 ## Education
 
-- **KAIST**, M.S. in Electrical Engineering (advisor: Prof. Jinwoo Shin) / Daejoen, South Korea / Aug 2020
-- **KAIST**, B.S. in Electrical Engineering & Mathmatical Sciences (minor) / Dajeon, South Korea / Feb 2019
-- **Sejong Science High School** / Seoul, South Korea / Feb 2014
+- **KAIST**, M.S. in Electrical Engineering (advisor: Prof. Jinwoo Shin) /Aug 2020
+- **KAIST**, B.S. in Electrical Engineering & Mathmatical Sciences (minor) / Feb 2019
+- **Sejong Science High School** / Feb 2014
 
 ## Work Experience
 
