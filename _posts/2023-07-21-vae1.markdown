@@ -114,7 +114,7 @@ $log p_{\theta}(x) \geq \text{Reconstruction Error} + \text{Regularization Error
 
 ## Reparameterization Trick
 
-이제 ELBO를 계산해서 VAE를 학습시키면 되겠다! 라고 생각이 들지만, 저 식을 잘 생각해보면 계산하기 어려운 지점이 보일 겁니다. 바로 $q_{\phi}(z\|x)$에 대한 적분을(첫 번째 항) 해야 합니다. 이를 위해서는 encoder의 출력으로 얻어진 분포 $mathcal{N}(\mu, \Sigma)$에서 여러 번 sampling을 반복해서 연산을 해야 합니다. Forward 연산의 경우 이렇게 진행해도 (연산량은 많더라도) 문제는 없지만, backward의 경우 얘기가 달라집니다. **Sampling은 미분 가능한 연산이 아니기 때문입니다.** 따라서, reparametrization trick은 $z$의 분포를 미분이 가능하도록 바꿔주는 것이라 생각해도 무방합니다.
+이제 ELBO를 계산해서 VAE를 학습시키면 되겠다! 라고 생각이 들지만, 저 식을 잘 생각해보면 계산하기 어려운 지점이 보일 겁니다. 바로 $q_{\phi}(z\|x)$에 대한 적분을(첫 번째 항) 해야 합니다. 이를 위해서는 encoder의 출력으로 얻어진 분포 $\mathcal{N}(\mu, \Sigma)$에서 여러 번 sampling을 반복해서 연산을 해야 합니다. Forward 연산의 경우 이렇게 진행해도 (연산량은 많더라도) 문제는 없지만, backward의 경우 얘기가 달라집니다. **Sampling은 미분 가능한 연산이 아니기 때문입니다.** 따라서, reparametrization trick은 $z$의 분포를 미분이 가능하도록 바꿔주는 것이라 생각해도 무방합니다.
 
 Reparameterization trick의 아이디어는 간단합니다. **Stochasticity를 추가적인 noise $\epsilon \in \mathcal{N}(0,I)$로 옮겨주자.** 즉, 우리가 연산해야 하는 $\mu$와 $\Sigma$에 대해서는 더 이상 stochasticity가 존재하지 않도록 아래와 같이 $z$를 재정의해봅시다.
 
