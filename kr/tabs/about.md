@@ -51,7 +51,7 @@ European Computer Vision Association (**ECCV**), 2022
 
 - **MASKER: Masked Keyword Regularization for Reliable Text Classification**  
 <u>Seungjun Moon</u>\*, Sangwoo Mo\* , Kimin Lee, Jaeho Lee, Jinwoo Shin  
-AAAI Conference on Artificial Intelligence (**AAAI**), 2021
+Association for the Advancement of Artificial Intelligence (**AAAI**), 2021
 
 ## Education
 
