@@ -37,7 +37,7 @@ date: 2023-07-25 13:57:06 +0900
 # exclude from search engines
 #search_engine_exclude: true
 # to disable this page, simply set published: false or delete this file
-published: false
+# published: false
 ---
 
 <!-- outline-start -->
@@ -61,10 +61,13 @@ DDPM은 입력 이미지 $x_{0}$로 부터 시작해서 우선 noise를 입혀�
 Forward process는 $t-1$번째 step의 이미지 $x_{t-1}$에 Gaussian noise를 더하여 $x_{t}$를 만들어가는 과정입니다. 이 때 각 단계에서의 process는 바로 이전 단계의 상태에만 영향을 받는 [Markov Chain](https://en.wikipedia.org/wiki/Markov_chain)이 되도록 설계합니다. Forward process $q(x_{t}\|x_{t-1})$는 아래와 같이 나타낼 수 있습니다.
 
 <div align="center">
-$q(x_{t}|x_{t-1})=\mathcal{N}(x_{t};\sqrt(1-\beta_{t})x_{t-1},\beta_{t}\text{I})$
+$q(x_{t}|x_{t-1})=\mathcal{N}(x_{t};\sqrt{1-\beta_{t}}x_{t-1},\beta_{t}\text{I})$
 <!-- $q(x_{t}|x_{t-1})=\prod_{t=1}^{T}q(x_{t}|x_{t-1})$ -->
 </div>
 
-이 때 $\beta_{t}$는 주입되는 noise의 크기 정도로 생각하시면 됩니다. $\beta_{t}$의 경우 reparameterization을 활용하여 학습을 통해서 얻을 수도 있지만, DDPM 저자들은 fixed constant를 써도 상관없다고 합니다. DDPM에서는 실제로 $\beta_{t}$를 hyperparameter로 미리 지정해주기 때문에, forward process에서는 학습할 parameter가 없습니다.
+이 때 $\beta_{t}$는 주입되는 noise의 크기 정도로 생각하시면 됩니다. $\beta_{t}$의 경우 reparameterization을 활용하여 학습을 통해서 얻을 수도 있지만, DDPM 저자들은 fixed constant를 써도 상관없다고 합니다. DDPM에서는 실제로 $\beta_{t}$를 hyperparameter로 미리 지정해주기 때문에, forward process에서는 학습할 parameter가 없습니다. 이 때, $\beta_{t}$가 실제 data scale보다 훨씬 작은 값을 가진다면, 우리는 $x_{t}$를 구하기 위해 $t$번의 noise 더하기를 하지 않고, 아래와 같은 식으로 한 번에 $x_{t}$를 구할 수 있음이 증명되어 있습니다.
 
+<div align="center">
+$q(x_{t}|x_{0})=\mathcal{N}(x_{t};\sqrt{\={\alpha}_t}x_{0}, (1-\={\alpha}_t)\cdot\text{I})$
+</div>
 
