@@ -65,9 +65,11 @@ $q(x_{t}|x_{t-1})=\mathcal{N}(x_{t};\sqrt{1-\beta_{t}}x_{t-1},\beta_{t}\text{I})
 <!-- $q(x_{t}|x_{t-1})=\prod_{t=1}^{T}q(x_{t}|x_{t-1})$ -->
 </div>
 
-이 때 $\beta_{t}$는 주입되는 noise의 크기 정도로 생각하시면 됩니다. $\beta_{t}$의 경우 reparameterization을 활용하여 학습을 통해서 얻을 수도 있지만, DDPM 저자들은 fixed constant를 써도 상관없다고 합니다. DDPM에서는 실제로 $\beta_{t}$를 hyperparameter로 미리 지정해주기 때문에, forward process에서는 학습할 parameter가 없습니다. 이 때, $\beta_{t}$가 실제 data scale보다 훨씬 작은 값을 가진다면, 우리는 $x_{t}$를 구하기 위해 $t$번의 noise 더하기를 하지 않고, 아래와 같은 식으로 한 번에 $x_{t}$를 구할 수 있음이 증명되어 있습니다.
+이 때 $\beta_{t}$는 주입되는 noise의 크기 정도로 생각하시면 됩니다. $\beta_{t}$의 경우 reparameterization을 활용하여 학습을 통해서 얻을 수도 있지만, DDPM 저자들은 fixed constant를 써도 상관없다고 합니다. DDPM에서는 실제로 $\beta_{t}$를 hyperparameter로 미리 지정해주기 때문에, forward process에서는 학습할 parameter가 없습니다. 저자들은 step을 거듭할수록 $\beta_{t}$가 점진적으로 커지도록 설정해줬습니다. 이 때, $\beta_{t}$가 실제 data scale보다 훨씬 작은 값을 가진다면, 우리는 $x_{t}$를 구하기 위해 $t$번의 noise 더하기를 하지 않고, 아래와 같은 식으로 한 번에 $x_{t}$를 구할 수 있음이 증명되어 있습니다.
 
 <div align="center">
 $q(x_{t}|x_{0})=\mathcal{N}(x_{t};\sqrt{\bar{\alpha}_t}x_{0}, (1-\bar{\alpha}_t)\cdot\text{I})$
 </div>
 
+여기서 $\alpha_{t}:=1-\beta_{t}, \bar{\alpha}_{t}=\Phi_{s=1}^t\alpha_{s}$ 입니다.
+실제로 저자들은 데이터의 scale $[-1,1]$에 비해 훨씬 작은 $\beta_{t}$를 설정하여 ($\beta_{1}=10^{-4}$ to $\beta_{T}=0.02$) 위 식을 활용하였습니다.
