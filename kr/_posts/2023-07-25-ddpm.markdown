@@ -71,5 +71,7 @@ $q(x_{t}|x_{t-1})=\mathcal{N}(x_{t};\sqrt{1-\beta_{t}}x_{t-1},\beta_{t}\text{I})
 $q(x_{t}|x_{0})=\mathcal{N}(x_{t};\sqrt{\bar{\alpha}_t}x_{0}, (1-\bar{\alpha}_t)\cdot\text{I})$
 </div>
 
-여기서 $\alpha_{t}:=1-\beta_{t}, \bar{\alpha}_{t}=\Phi_{s=1}^t\alpha_{s}$ 입니다.
+여기서 $\alpha_{t}:=1-\beta_{t}$, $\bar{\alpha_t}:=\Phi_{s=1}^t\alpha_{s}$ 를 뜻합니다.
 실제로 저자들은 데이터의 scale $[-1,1]$에 비해 훨씬 작은 $\beta_{t}$를 설정하여 ($\beta_{1}=10^{-4}$ to $\beta_{T}=0.02$) 위 식을 활용하였습니다.
+
+
