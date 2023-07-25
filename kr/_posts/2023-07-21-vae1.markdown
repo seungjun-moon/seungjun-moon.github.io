@@ -5,11 +5,11 @@ title: "[논문 리뷰] Variational AutoEncoder 이해하기"
 
 # post specific
 # if not specified, .name will be used from _data/owner/[language].yml
-author: Mr. Green's Workshop
+author: SeungJun Moon
 # multiple category is not supported
 category: jekyll
 # multiple tag entries are possible
-tags: [jekyll, sample, example post]
+tags: [diffusion]
 use_math: true
 # thumbnail image for post
 img: "/assets/img/posts/vae1/structure2.png"
