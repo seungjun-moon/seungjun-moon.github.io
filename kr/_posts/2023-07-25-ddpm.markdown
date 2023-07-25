@@ -1,0 +1,70 @@
+---
+# multilingual page pair id, this must pair with translations of this page. (This name must be unique)
+lng_pair: id_ddpm
+title: "[논문 리뷰] Denoising Diffusion Probabilistic Models 이해하기"
+
+# post specific
+# if not specified, .name will be used from _data/owner/[language].yml
+author: SeungJun Moon
+# multiple category is not supported
+category: jekyll
+# multiple tag entries are possible
+tags: [diffusion]
+use_math: true
+# thumbnail image for post
+img: "/assets/img/posts/ddpm/structure.png"
+# disable comments on this page
+#comments_disable: true
+
+# publish date
+date: 2023-07-25 13:57:06 +0900
+
+# seo
+# if not specified, date will be used.
+#meta_modify_date: 2022-02-10 08:11:06 +0900
+# check the meta_common_description in _data/owner/[language].yml
+#meta_description: ""
+
+# optional
+# please use the "image_viewer_on" below to enable image viewer for individual pages or posts (_posts/ or [language]/_posts folders).
+# image viewer can be enabled or disabled for all posts using the "image_viewer_posts: true" setting in _data/conf/main.yml.
+#image_viewer_on: true
+# please use the "image_lazy_loader_on" below to enable image lazy loader for individual pages or posts (_posts/ or [language]/_posts folders).
+# image lazy loader can be enabled or disabled for all posts using the "image_lazy_loader_posts: true" setting in _data/conf/main.yml.
+#image_lazy_loader_on: true
+# exclude from on site search
+#on_site_search_exclude: true
+# exclude from search engines
+#search_engine_exclude: true
+# to disable this page, simply set published: false or delete this file
+published: false
+---
+
+<!-- outline-start -->
+
+지난 [VAE 포스팅](https://seungjun-moon.github.io/kr/2023-07-21-vae1)에 이어서 이번 포스팅에서는 [Denoising Diffusion Probabilistic Models](https://arxiv.org/abs/2006.11239), 흔히 DDPM으로 널리 알려진 diffusion 모델에 대해서 설명하려고 한다.
+
+<!-- outline-end -->
+
+***
+
+## DDPM과 VAE
+
+VAE와 DDPM 모두 학습 데이터 $X$를 기반으로 latent를 추출하고, 이를 바탕으로 데이터를 재구성해나간다는 점에서 유사한 구조를 가지고 있습니다. 아마 이 두 모델의 가장 큰 차이점은 latent를 얻는 데에 한 step만을 필요로 하는지(VAE), 또는 여러 step을 거쳐 점진적으로 만들어 나가는지(DDPM) 일겁니다. $X$를 입력으로 받아 직접적으로 $\mu$와 $\Sigma$를 출력하여 latent의 분포를 예측하는 VAE와 다르게, DDPM은 $X$에 점진적으로 noise를 입히는 과정을 통해서 latent를 만들어냅니다. 그 과정이 어떻게 이루어지는지 아래 그림을 보면서 다시 설명드리겠습니다.
+
+![Alt text](/assets/img/posts/ddpm/structure.png){: width="90%""}{:data-align="center"}
+
+DDPM은 입력 이미지 $x_{0}$로 부터 시작해서 우선 noise를 입혀나가는 과정인 **forward process**를 거치게 됩니다. 이 때 총 $T$번의 스텝을 통해 noise가 충분히 입혀지게 되고, $x_{T}$는 Gaussian noise가 됩니다. 우리는 Gaussian noise, 즉 $x_{T}$로 부터 noise를 걷어내는 **reverse process**를 학습시키는 것이 목표입니다.
+
+## Forward Process
+
+Forward process는 $t-1$번째 step의 이미지 $x_{t-1}$에 Gaussian noise를 더하여 $x_{t}$를 만들어가는 과정입니다. 이 때 각 단계에서의 process는 바로 이전 단계의 상태에만 영향을 받는 [Markov Chain](https://en.wikipedia.org/wiki/Markov_chain)이 되도록 설계합니다. Forward process $q(x_{t}\|x_{t-1})$는 아래와 같이 나타낼 수 있습니다.
+
+<div align="center">
+$q(x_{t}|x_{t-1})=\mathcal{N}(x_{t};\sqrt(1-\beta_{t})x_{t-1},\beta_{t}\text{I})$
+<!-- $q(x_{t}|x_{t-1})=\prod_{t=1}^{T}q(x_{t}|x_{t-1})$ -->
+</div>
+
+이 때 $\beta_{t}$는 주입되는 noise의 크기 정도로 생각하시면 됩니다. $\beta_{t}$의 경우 reparameterization을 활용하여 학습을 통해서 얻을 수도 있지만, DDPM 저자들은 fixed constant를 써도 상관없다고 합니다. DDPM에서는 실제로 $\beta_{t}$를 hyperparameter로 미리 지정해주기 때문에, forward process에서는 학습할 parameter가 없습니다.
+
+
