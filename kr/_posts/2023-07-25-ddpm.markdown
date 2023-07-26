@@ -129,7 +129,7 @@ $x_{t}(x_{0}, \epsilon) = \sqrt{\bar{\alpha}_t}x_{0}+\sqrt{1-\bar{\alpha}_t}\eps
 
 이를 활용하여 $L_{t-1}$을 다시 나타내면 아래와 같습니다.
 
-![Alt text](/assets/img/posts/ddpm/lt_mean.png){: width="85%""}{:data-align="center"}
+![Alt text](/assets/img/posts/ddpm/lt_epsilon.png){: width="85%""}{:data-align="center"}
 
 두 번째 식에 대한 증명은 생략하겠습니다(궁금하시다면 [참고](https://jang-inspiration.com/ddpm-2)하세요). 이제 $\mu_{\theta}$는 $x_{t}$가 주어졌을 때, $\frac{1}{\sqrt{\alpha_t}}(x_{t}(x_{0},\epsilon)-\frac{\beta_t}{\sqrt{1-\bar{\alpha_t}}}\epsilon)$를 예측해야 하겠네요. 여기서 우리는 $x_{t}$는 network의 입력 값으로 받아올 수 있음을 생각해봅시다. 즉, 우리가 $\theta$를 활용해 모델링할 부분은 mean 전체가 아니라 noise $\epsilon$에만 국한될 수 있는 겁니다. 이 사실을 통해 우리는 $\mu_\theta(x_t,t)$를 아래와 같이 재정의할 수 있습니다.
 
@@ -141,4 +141,4 @@ $\epsilon_{\theta}$는 $x_{t}$로 부터 $\epsilon$을 추측하는 network라 �
 
 이 과정들을 요약하여 학습 과정으로 나타내면 아래의 Algorithm 1과 같이 나타낼 수 있습니다. 또한, Gaussian noise $x_{T}$로 부터 이미지를 복원해가는 inference 과정은 Algorithm 2처럼 나타낼 수 있습니다.
 
-![Alt text](/assets/img/posts/ddpm/mu_epsilon.png){: width="100%""}{:data-align="center"}
+![Alt text](/assets/img/posts/ddpm/algorithm.png){: width="100%""}{:data-align="center"}
