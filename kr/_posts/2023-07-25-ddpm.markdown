@@ -142,3 +142,9 @@ $\epsilon_{\theta}$는 $x_{t}$로 부터 $\epsilon$을 추측하는 network라 �
 이 과정들을 요약하여 학습 과정으로 나타내면 아래의 Algorithm 1과 같이 나타낼 수 있습니다. 또한, Gaussian noise $x_{T}$로 부터 이미지를 복원해가는 inference 과정은 Algorithm 2처럼 나타낼 수 있습니다.
 
 ![Alt text](/assets/img/posts/ddpm/algorithm.png){: width="100%""}{:data-align="center"}
+
+***
+
+## Conclusion
+
+수식이 몹시 많고 복잡해보이긴 했지만, 생각보다 ~~디테일을 조금씩 무시하면~~ 큰 아이디어들은 직관적이고 따라갈만 했습니다. $L_{t-1}$을 denoising 관점으로 접근하여 학습하기 아주 용이한 형태로 만든 것이 DDPM의 핵심으로 느껴집니다. 조만간 stable diffusion, 혹은 3D 기반 생성 모델에 대한 포스팅으로 돌아오겠습니다. 감사합니다.
