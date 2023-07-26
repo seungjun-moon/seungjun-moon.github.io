@@ -1,7 +1,7 @@
 ---
 # multilingual page pair id, this must pair with translations of this page. (This name must be unique)
 lng_pair: id_ddpm
-title: "[논문 리뷰] Denoising Diffusion Probabilistic Models 이해하기"
+title: "[Paper Review] Understanding Denoising Diffusion Probabilistic Models"
 
 # post specific
 # if not specified, .name will be used from _data/owner/[language].yml
