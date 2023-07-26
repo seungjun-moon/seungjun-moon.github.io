@@ -106,15 +106,26 @@ $\mathbb{E}[-\text{log}p_{\theta}(x_{0})]\leq \mathbb{E}_q\bigg[D_{\text{KL}}(q(
 
 ## Denoising Process
 
-Reconstruction loss와 Regularization loss를 제외하면 가운데 항이 남습니다. Sigma 내부의 항 $D_{\text{KL}}(q(x_{t-1}\|x_t,x_0)\|\|p_{\theta}(x_{t-1}\|x_{t}))$의 의미는 꽤나 직관적입니다. Reverse process $p_{\theta}$에서 $x_{t}$에서 noise를 걷어내고 만든 $x_{t-1}$의 분포가 forward process에서 $x_{0}$, $x_{t}$가 주어졌을 때 $x_{t-1}$의 분포와 얼마나 가까운지를 측정하는 식이 됩니다. 더 쉽게 말하자면, reverse process가 얼마나 forward process의 역과정을 잘 모방했는지를 측정하는 겁니다. Noise을 입힌 과정의 반대로 denoising을 잘한다면 그만큼 원래 이미지를 잘 복원한다는 뜻일테니, 이 loss 항은 직관적으로도 잘 와닿습니다.
+Reconstruction loss와 Regularization loss를 제외하면 가운데 항이 남습니다. Sigma 내부의 항 $L_{t-1}=D_{\text{KL}}(q(x_{t-1}\|x_t,x_0)\|\|p_{\theta}(x_{t-1}\|x_{t}))$의 의미는 꽤나 직관적입니다. Reverse process $p_{\theta}$에서 $x_{t}$에서 noise를 걷어내고 만든 $x_{t-1}$의 분포가 forward process에서 $x_{0}$, $x_{t}$가 주어졌을 때 $x_{t-1}$의 분포와 얼마나 가까운지를 측정하는 식이 됩니다. 더 쉽게 말하자면, reverse process가 얼마나 forward process의 역과정을 잘 모방했는지를 측정하는 겁니다. Noise을 입힌 과정의 반대로 denoising을 잘한다면 그만큼 원래 이미지를 잘 복원한다는 뜻일테니, 이 loss 항은 직관적으로도 잘 와닿습니다.
 
-$q(x_{t-1}\|x_{t})$의 경우 tractable하지 않지만, 위 식처럼 $x_{0}$가 condition으로 주어진 경우 아래와 같이 tractable 해집니다. ([DDPM 논문 참고]((https://arxiv.org/abs/2006.11239)))
+$q(x_{t-1}\|x_{t})$의 경우 tractable하지 않지만, $x_{0}$가 condition으로 주어진 경우 아래와 같이 tractable 해집니다. ([DDPM 논문 참고]((https://arxiv.org/abs/2006.11239)))
 
 ![Alt text](/assets/img/posts/ddpm/fpp.png){: width="90%""}{:data-align="center"}
 
 따라서, 우리가 KL-divergence를 구하고 싶은 분포들은 모두 Gaussian 분포라 할 수 있게 되었습니다. 두 Gaussian $\mathcal(N)(\mu_1,\sigma_1)$과 $\mathcal(N)(\mu_2,\sigma_2)$ 사이의 KL-divergence는 [아래와 같이 나타낼 수 있으므로](https://simpling.tistory.com/33), 우리는 각 분포의 mean과 variance만 구하면 됩니다.
 
-![Alt text](/assets/img/posts/ddpm/kl_gaussian.png){: width="40%""}{:data-align="center"}
+![Alt text](/assets/img/posts/ddpm/kl_gaussian.png){: width="30%""}{:data-align="center"}
 
 먼저, 저자들은 분산 $\Sigma_{\theta}(x_t,t)=\sigma_{t}^2\cdot I$로, $t$에 따라 변하는 *상수*로 설정합니다. 논문에는 $\sigma_{t}^2=\beta_t$ 및 여러 가지 시나리오에서 비교하는데, 여기에서는 학습 가능한 parameter가 아닌 상수로 설정했다는 점만 짚고 넘어가겠습니다.
+따라서 우리는 위의 두 Gaussian 사이의 KL-divergence 식에서 network의 parameter에 영향을 받지 않는 항들을 묶어서 $C$로 표현하여 $L_{t-1}$을 아래와 같이 나타낼 수 있습니다.
+
+![Alt text](/assets/img/posts/ddpm/lt_mean.png){: width="40%""}{:data-align="center"}
+
+$L_{t-1}$이 조금 더 직관적인 메시지를 표현하게 되었군요. 우리가 학습하는 network의 목표는 $\mu_{\theta}$를 통해 $\tilde{\mu_t}$를 예측하는 것입니다. 이제 여기서는 loss를 더 단순화할 방법이 없을까요? 이 쯤에서 아까 구했던 식 $q(x_{t}\|x_{0})=\mathcal{N}(x_{t};\sqrt{\bar{\alpha_{t}}}x_{0}, (1-\bar{\alpha_t})\cdot\text{I})$를 떠올려 봅시다. 우리는 reparameterization을 통해 $x_{t}$를 $x_{0}$와 $\epsilon$으로 이루어진 함수로 표현할 수 있습니다.
+
+<div align="center">
+$x_{t}(x_{0}, \epsilon) = \sqrt{\bar{\alpha}_t}x_{0}+\sqrt{1-\bar{\alpha}_t}\epsilon$ for $\epsilon \sim \mathcal(0,I)$
+</div>
+
+
 
