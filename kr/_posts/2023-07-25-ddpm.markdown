@@ -110,4 +110,11 @@ Reconstruction loss와 Regularization loss를 제외하면 가운데 항이 남�
 
 $q(x_{t-1}\|x_{t})$의 경우 tractable하지 않지만, 위 식처럼 $x_{0}$가 condition으로 주어진 경우 아래와 같이 tractable 해집니다. ([DDPM 논문 참고]((https://arxiv.org/abs/2006.11239)))
 
-![Alt text](/assets/img/posts/ddpm/fpp.png){: width="70%""}{:data-align="center"}
+![Alt text](/assets/img/posts/ddpm/fpp.png){: width="90%""}{:data-align="center"}
+
+따라서, 우리가 KL-divergence를 구하고 싶은 분포들은 모두 Gaussian 분포라 할 수 있게 되었습니다. 두 Gaussian $\mathcal(N)(\mu_1,\sigma_1)$과 $\mathcal(N)(\mu_2,\sigma_2)$ 사이의 KL-divergence는 [아래와 같이 나타낼 수 있으므로](https://simpling.tistory.com/33), 우리는 각 분포의 mean과 variance만 구하면 됩니다.
+
+![Alt text](/assets/img/posts/ddpm/kl_gaussian.png){: width="40%""}{:data-align="center"}
+
+먼저, 저자들은 분산 $\Sigma_{\theta}(x_t,t)=\sigma_{t}^2\cdot I$로, $t$에 따라 변하는 *상수*로 설정합니다. 논문에는 $\sigma_{t}^2=\beta_t$ 및 여러 가지 시나리오에서 비교하는데, 여기에서는 학습 가능한 parameter가 아닌 상수로 설정했다는 점만 짚고 넘어가겠습니다.
+
