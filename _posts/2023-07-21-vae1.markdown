@@ -7,9 +7,9 @@ title: "[Paper Review] Understanding Variational AutoEncoder"
 # if not specified, .name will be used from _data/owner/[language].yml
 author: SeungJun Moon
 # multiple category is not supported
-category: jekyll
+category: diffusion
 # multiple tag entries are possible
-tags: [diffusion]
+tags: [diffusion, vae]
 use_math: true
 # thumbnail image for post
 img: "/assets/img/posts/vae1/structure2.png"

@@ -7,7 +7,7 @@ title: "코드 템플릿"
 # if not specified, .name will be used from _data/owner/[language].yml
 author: Jekyll
 # multiple category is not supported
-category: jekyll
+category: sample
 # multiple tag entries are possible
 tags: [sample]
 # thumbnail image for post
