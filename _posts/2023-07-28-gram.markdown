@@ -12,7 +12,7 @@ category: 3D
 tags: [NeRF, 3D GAN]
 use_math: true
 # thumbnail image for post
-img: "/assets/img/posts/ddpm/structure.png"
+img: "/assets/img/posts/gram/structure.png"
 # disable comments on this page
 #comments_disable: true
 
