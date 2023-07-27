@@ -1,0 +1,63 @@
+---
+# multilingual page pair id, this must pair with translations of this page. (This name must be unique)
+lng_pair: id_ddpm
+title: "[Paper Review] Understanding Denoising Diffusion Probabilistic Models"
+
+# post specific
+# if not specified, .name will be used from _data/owner/[language].yml
+author: SeungJun Moon
+# multiple category is not supported
+category: 3D
+# multiple tag entries are possible
+tags: [NeRF, 3D GAN]
+use_math: true
+# thumbnail image for post
+img: "/assets/img/posts/ddpm/structure.png"
+# disable comments on this page
+#comments_disable: true
+
+# publish date
+date: 2023-07-28 00:40:00 +0900
+
+# seo
+# if not specified, date will be used.
+#meta_modify_date: 2022-02-10 08:11:06 +0900
+# check the meta_common_description in _data/owner/[language].yml
+#meta_description: ""
+
+# optional
+# please use the "image_viewer_on" below to enable image viewer for individual pages or posts (_posts/ or [language]/_posts folders).
+# image viewer can be enabled or disabled for all posts using the "image_viewer_posts: true" setting in _data/conf/main.yml.
+#image_viewer_on: true
+# please use the "image_lazy_loader_on" below to enable image lazy loader for individual pages or posts (_posts/ or [language]/_posts folders).
+# image lazy loader can be enabled or disabled for all posts using the "image_lazy_loader_posts: true" setting in _data/conf/main.yml.
+#image_lazy_loader_on: true
+# exclude from on site search
+#on_site_search_exclude: true
+# exclude from search engines
+#search_engine_exclude: true
+# to disable this page, simply set published: false or delete this file
+# published: false
+---
+
+<!-- outline-start -->
+
+한참 diffusion 논문을 읽다가 본업으로 돌아와 다시 3D generator 관련 논문을 읽었습니다. 이번에 다룰 논문은 CVPR 2022에 Oral presentation으로 발표된 [GRAM](https://arxiv.org/abs/2112.08867)이라는 논문입니다. 사실은 GRAM 자체가 궁금했기 보단 GRAM을 활용한 [다른 모델](https://arxiv.org/abs/2210.06465)을 이해하기 위해서 읽었는데, 생각보다 재미있는 포인트들이 많아서 포스팅으로 남기게 되었습니다.
+
+본 포스팅은 NeRF 모델에 대한 기본적인 이해가 있다는 가정 하에 작성되었습니다.
+
+<!-- outline-end -->
+
+***
+
+## NeRF Sampling의 문제점
+
+NeRF는 ray의 trajectory 위에서 균일하게 구간을 나누고, 각 구간에서 임의의 점을 sampling하는 Monte Carlo Sampling 방식을 취합니다. 그리고 각 지점에서 volume density를 계산한 후, density 분포를 토대로 hierarchical sampling(NeRF-H)를 재차 진행합니다. Density가 높은 부분이 최종 RGB에 영향을 줄 확률이 높으므로, density가 높은 부분에서 많은 횟수 sampling이 되도록 하는 똑똑한 전략인거죠. 이를 그림([출처](https://jaminfong.cn/neusample/))으로 표현하면 아래와 같습니다.
+
+![Alt text](/assets/img/posts/gram/sampling_nerf.png){: width="70%""}{:data-align="center"}
+
+하지만 GRAM의 저자들은 이러한 sampling 방식이 문제가 된다고 주장합니다. 우선, Monte Carlo 기반의 Sampling을 사용하면 sample의 수가 적어졌을 때 생성되는 이미지의 품질이 굉장히 unstable 해진다고 합니다. 또한, sampling되는 point가 ray trajectory 위 interval에서 random하게 결정되다보니 이웃하는 ray임에도 sampling되는 point들 사이의 거리가 벌어질 수 있습니다. 그 결과, (이웃한 pixel임에도) integrate된 RGB 값도 크게 달라지게 되고, 이는 아래와 같이 원치 않는 noise pattern의 원인이 된다고 합니다.
+
+![Alt text](/assets/img/posts/gram/noise_nerf.png){: width="70%""}{:data-align="center"}
+
+저자들은 ~~manifold prediction~~이라는 새로운 발상으로 이러한 문제를 돌파합니다.
