@@ -58,6 +58,30 @@ NeRF는 ray의 trajectory 위에서 균일하게 구간을 나누고, 각 구간
 
 하지만 GRAM의 저자들은 이러한 sampling 방식이 문제가 된다고 주장합니다. 우선, Monte Carlo 기반의 Sampling을 사용하면 sample의 수가 적어졌을 때 생성되는 이미지의 품질이 굉장히 unstable 해진다고 합니다. 또한, sampling되는 point가 ray trajectory 위 interval에서 random하게 결정되다보니 이웃하는 ray임에도 sampling되는 point들 사이의 거리가 벌어질 수 있습니다. 그 결과, (이웃한 pixel임에도) integrate된 RGB 값도 크게 달라지게 되고, 이는 아래와 같이 원치 않는 noise pattern의 원인이 된다고 합니다.
 
-![Alt text](/assets/img/posts/gram/noise_nerf.png){: width="70%""}{:data-align="center"}
+![Alt text](/assets/img/posts/gram/noise_nerf.png){: width="50%""}{:data-align="center"}
 
-저자들은 ~~manifold prediction~~이라는 새로운 발상으로 이러한 문제를 돌파합니다.
+저자들은 *manifold prediction*이라는 새로운 발상으로 이러한 문제를 돌파합니다.
+
+***
+
+## Manifold Prediction
+
+![Alt text](/assets/img/posts/gram/structure.png){: width="70%""}{:data-align="center"}
+
+위 그림의 GRAM의 구조를 보면 이거저거 많이 들어가있긴 하지만, 사실 GRAM의 접근법은 너무나 단순해서(동시에 효과적입니다) 설명드릴 게 많지는 않습니다. 기존의 3D 기반 GAN과 가장 크게 다른 점은 바로 Manifold Predictor $\mathcal{M}$을 도입했다는 점입니다. $\mathcal{M}$은 아래와 같이 점의 좌표를 입력으로 받아 scalar 값 $s$를 예측하는 scalar field를 정의합니다.
+
+<div align="center">
+$\mathcal{M} : x\in\mathbb{R}^3 \rightarrow s\in\mathbb{R}$
+</div>
+
+여기서 우리는 각각 level ${l_i}$를 가지는 $N$개의 [isosurface](https://en.wikipedia.org/wiki/Isosurface)(직역하면 등위면 정도가 되네요)의 집합 $\{\mathcal{S_i}\}={x\|\mathcal{M}(x)=l_i$를 정의해줍니다. 이 때, $l_i$는 학습을 통해 얻는 값이 아니라 미리 정의된 상수를 활용한다고 합니다. 이 scalar field 자체는 별 의미가 없기 때문에, 이 level 자체의 값이 중요하지는 않기에 임의로 설정해도 상관 없을 듯 합니다.
+
+그렇다면 이 scalar field로 우리는 무엇을 할까요? 저자들은 여기서 굉장히 재미있는 제안을 합니다. Ray 위의 점들 중에서 **isosurface와 교차하는 점만을 활용해서 rendering 하자** 라고 말입니다. 수식으로 나타내면, 아래의 집합 $\{x_{i}\}$에 속하는 point를 지칭하는 것입니다.
+
+<div align="center">
+\{x_i\}=\{x|x=o+td, x\in\{\mathcal{S}_i\}, t\in[t_n, t_f]\}$
+</div>
+
+여기서 $o$와 $d$는 ray의 원점과 방향, $t_n$과 $t_f$는 near plane과 far plane을 나타내는 parameter입니다.
+
+
