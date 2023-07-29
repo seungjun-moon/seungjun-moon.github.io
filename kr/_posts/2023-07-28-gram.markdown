@@ -74,7 +74,7 @@ NeRF는 ray의 trajectory 위에서 균일하게 구간을 나누고, 각 구간
 $\mathcal{M} : x\in\mathbb{R}^3 \rightarrow s\in\mathbb{R}$
 </div>
 
-여기서 우리는 각각 level ${l_i}$를 가지는 $N$개의 [isosurface](https://en.wikipedia.org/wiki/Isosurface)(직역하면 등위면 정도가 되네요)의 집합 $\{S_i\}=\{x\|\mathcal{M}(x)=l_{i}\}$를 정의해줍니다. 이 때, $l_i$는 학습을 통해 얻는 값이 아니라 미리 정의된 상수를 활용한다고 합니다. 이 scalar field 자체는 별 의미가 없기 때문에, 이 level 자체의 값이 중요하지는 않기에 임의로 설정해도 상관 없을 듯 합니다.
+여기서 우리는 각각 level ${l_i}$를 가지는 $N$개의 [isosurface](https://en.wikipedia.org/wiki/Isosurface)(직역하면 등위면 정도가 되네요)의 집합 $\lbrace S_i\rbrace=$\lbrace x\|\mathcal{M}(x)=l_{i}$\rbrace$를 정의해줍니다. 이 때, $l_i$는 학습을 통해 얻는 값이 아니라 미리 정의된 상수를 활용한다고 합니다. 이 scalar field 자체는 별 의미가 없기 때문에, 이 level 자체의 값이 중요하지는 않기에 임의로 설정해도 상관 없을 듯 합니다.
 
 그렇다면 이 scalar field로 우리는 무엇을 할까요? 저자들은 여기서 굉장히 재미있는 제안을 합니다. Ray 위의 점들 중에서 **isosurface와 교차하는 점만을 활용해서 rendering 하자** 라고 말입니다. 수식으로 나타내면, 아래의 집합 $\{x_{i}\}$에 속하는 point를 지칭하는 것입니다.
 
