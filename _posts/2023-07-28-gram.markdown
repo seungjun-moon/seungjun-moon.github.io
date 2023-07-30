@@ -17,7 +17,7 @@ img: "/assets/img/posts/gram/structure.png"
 #comments_disable: true
 
 # publish date
-date: 2023-07-28 00:40:00 +0900
+date: 2023-07-30 22:52:00 +0900
 
 # seo
 # if not specified, date will be used.
@@ -111,7 +111,7 @@ $\Phi : (z, x, d) \in \mathbb{R}^(d+6) \rightarrow (c,\alpha)\in\mathbb{R}^4$
 
 또한, manifold learning을 적용하면 ray 당 sampling 개수를 크게 줄여도 FID가 크게 증가하지 않는 점도 신기했습니다. 아래 표에서처럼 Sampling point를 6개로, 통상적으로 쓰이는 64개 혹은 96개 보다 훨씬 적게 가져가면 NeRF-H의 경우 FID가 117로 굉장히 높게 나타나는 반면, GRAM의 경우 상대적으로 FID가 굉장히 작은 폭으로 증가하게 됩니다.
 
-![Alt text](/assets/img/posts/gram/ablation.png){: width="80%""}{:data-align="center"}
+![Alt text](/assets/img/posts/gram/ablation.png){: width="60%""}{:data-align="center"}
 
 이 외에도 더 다양한 [실험 결과](https://yudeng.github.io/GRAM/)를 확인하실 수 있습니다.
 
