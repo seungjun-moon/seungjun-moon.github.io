@@ -82,6 +82,14 @@ $\mathcal{M} : x\in\mathbb{R}^3 \rightarrow s\in\mathbb{R}$
 $\{x_i\}=\{x|x=o+td, x\in\{\mathcal{S}_i\}, t\in[t_n, t_f]\}$
 </div>
 
-여기서 $o$와 $d$는 ray의 원점과 방향, $t_n$과 $t_f$는 near plane과 far plane을 나타내는 parameter입니다.
+여기서 $o$와 $d$는 ray의 원점과 방향, $t_n$과 $t_f$는 near plane과 far plane을 나타내는 parameter입니다. 다시 말하지만, radiance generator $\Psi$에는 이 집합에 속한 점들만 통과시키는 겁니다. 이 점들을 미분 가능한 연산 과정을 통해 구하는 과정이 논문에는 설명되어 있는데, 여기서는 생략하도록 하겠습니다. 아무튼 이렇게 얻어진 점의 좌표와 view direction $d\in\mathbb{R}^d$, 그리고 latent code $z$를 함께 radiance generation $\Psi$에 넣어 RGB color 값과 동시에 occupancy $\alpha$를 얻을 수 있다고 합니다. (저자들은 NeRF의 volume density 대신 occupancy를 활용한 rendering 방법을 채택했다고 하는데, 정확한 이유는 모르겠습니다.)
+
+<div align="center">
+$\Psi : (z, x, d) \in \mathbb{R}^(d+6) \rightarrow (c,\alpha)\in\mathbb{R}^4$
+</div>
+
+***
+
+## Training and Experimental Results
 
 
