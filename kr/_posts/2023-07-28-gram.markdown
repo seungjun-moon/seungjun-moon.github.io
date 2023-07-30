@@ -102,10 +102,21 @@ $\Phi : (z, x, d) \in \mathbb{R}^(d+6) \rightarrow (c,\alpha)\in\mathbb{R}^4$
 
 학습된 manifold를 visualize하면 왼쪽 그림과 같아집니다. 개인적인 생각으로는 형상화하려는 mesh의 dilation을 취한 형태를 닮아 보입니다. 각각의 manifold 위에서 rendering되는 점들을 manifold 별로 visualize하면 오른쪽 그림과 같아진다고 합니다. Manifold 별로 뚜렷한 disentanglement가 보이지는 않는 거 같습니다.
 
-저는 다른 실험 결과들보다도 ablation study 부분의 결과가 꽤나 흥미로웠습니다. 첫 번째 ablation study는 manifold 학습에 대한 부분입니다. NeRF-H를 baseline으로 비교했을 때, Manifold를 학습하지 않고 Sperical 또는 Plane처럼 단순한 형태로만 가정하더라도 성능이 눈에 띄게 좋아지게 됩니다.
+저는 다른 실험 결과들보다도 ablation study 부분의 결과가 꽤나 흥미로웠습니다. 첫 번째 ablation study는 manifold 학습에 대한 부분입니다. NeRF-H를 baseline으로 비교했을 때, manifold를 학습하지 않고 spherical (학습 전 initialize 상태) 또는 plane처럼 단순한 형태로만 가정하더라도 성능이 눈에 띄게 좋아지게 됩니다.
 
-| | NeRF-H | Planes | Spherical (init) | Ours |
-| ------------------- | :------------------: | :------------------: | :------------------: |
-| FID 5K               |       28.3       |              27.8 | 25.8 |
-
+|        | NeRF-H | Planes | Spherical (init) | Ours |
+| ------ | :----: | :----: | :--------------: | :--: |
+| FID 5K | 35.4   |   28.3 |        27.8      | 25.8 |
 {:data-align="center"}
+
+또한, manifold learning을 적용하면 ray 당 sampling 개수를 크게 줄여도 FID가 크게 증가하지 않는 점도 신기했습니다. 아래 표에서처럼 Sampling point를 6개로, 통상적으로 쓰이는 64개 혹은 96개 보다 훨씬 적게 가져가면 NeRF-H의 경우 FID가 117로 굉장히 높게 나타나는 반면, GRAM의 경우 상대적으로 FID가 굉장히 작은 폭으로 증가하게 됩니다.
+
+![Alt text](/assets/img/posts/gram/ablation.png){: width="30%""}{:data-align="center"}
+
+이 외에도 더 다양한 [실험 결과](https://yudeng.github.io/GRAM/)를 확인하실 수 있습니다.
+
+***
+
+## Conclusion
+
+최근 NeRF의 성능이 점점 산업적 측면으로 쓰일 가능성이 보일만큼 발전했지만, 여전히 느린 inference time이 문제점으로 거론됩니다. Instant-NGP 등 NeRF inference 자체를 경량화하려는 노력도 많이 있지만, 개인적으로 explicit parameter deformation을 활용하고 싶은데, 이 자체가 NeRF inference 만큼이나 time-consuming합니다. 그래서 sampling point 수를 줄이는, 아주 직관적인 방법으로 inference 경량화하는 데에 관심이 많은데, 그런 입장에서 GRAM의 ablation study 결과는 꽤나 흥미로웠습니다. 기회가 된다면 적용해봐야겠습니다. 감사합니다.
