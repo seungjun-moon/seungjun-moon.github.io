@@ -89,5 +89,28 @@ $W$는 large corpus of 3D FLAME로 미리 training 해둔다고 합니다.
 
 이제 $W$를 통해서 observation space에서의 $x$를 canonical space $\bar{x}$로 mapping하는 함수는 익혔습니다. 이제 이 위에서 rendering만 하면 되는데, 우리는 만들어진 얼굴의 형상이 canonicalized FLAME parameter $\bar{p}$가 만들어낸 mesh와 geometry가 최대한 유사하기를 바랍니다. 앞에서 $W$를 통해서 열심히 deformation까지 해뒀는데, 정작 Volume Rendering을 하고 나니 완전히 다른 모양의 얼굴이 나오면 속상하지 않을까요? 이를 방지하기 위해서 우리는 volume rendering에서의 출력값 volume density $\sigma$에 대해서 아래와 같은 loss를 걸어줍니다.
 
-![Alt text](/assets/img/posts/omni/loss_prior.png){: width="60%""}{:data-align="center"}
+![Alt text](/assets/img/posts/omni/loss_prior.png){: width="40%""}{:data-align="center"}
 
+FLAME parameter의 geometric prior를 따르라고 해서 prior loss인 거 같습니다. 식이 복잡해보이는데, 사실 굉장히 단순합니다. 우선 volume renderer의 출력값 $\sigma^\*(x\|z,p)$가 $\sigma^\*(x\|p)$를 모방하도록 하고 있습니다. $\sigma^\*(x\|p)$을 설명하는 (5)번 식을 잘 봐봅시다. 우선 $s(x\|p)=0$인 경우, $\sigma^\*(x\|p)$는 $1/2\cdot\kappa$가 됩니다. 이 값이 아마 surface 표면 위에서의 volume density 기준이 될 겁니다. 그리고 $s(x\|p)$이 0보다 더 작아지는 경우, 우리는 SDF의 정의에 따라 $x$가 surface 내부로 점점 들어가고 있다고 생각할 수 있습니다. 이 경우 $\sigma^\*(x\|p)$의 값은 점점 커져서 $1/\kappa$에 수렴하게 됩니다. 반대로 $s(x\|p)$이 0보다 더 커지는 경우, 우리는 SDF의 정의에 따라 $x$가 surface에서부터 점점 멀어지고 있다고 볼 수 있습니다. 이 경우 $\sigma^\*(x\|p)$의 값은 점점 작아져서 $0$에 수렴하게 됩니다. 간단하게, SDF가 정의한 surface의 모양을 volume rendering을 통해서 reconstruct한다고 생각하시면 되겠습니다. 마지막으로, rendering 시에는 surface 표면에서의 값이 계산될 때 가장 중요하기 때문에 양의 방향이든 음의 방향이든 surface에서 멀어지는 점에 대한 계산은 중요도가 떨어지게 됩니다. 그래서 $L_{prior}$의 각 계산항 앞에는 decay term $e^{-\gamma\|s(x\|p)\|}$가 붙습니다. $\|s(x\|p)\|$ 값이 크다는 말은 그만큼 surface에서 멀다는 뜻이므로, 합리적인 decay term이라 생각되네요. 그리고 사실 여기에는 더 큰 이유가 숨어 있는데, 바로 **FLAME은 머리카락이나 안경 같은 feature는 모델링하지 못한다는 것입니다**. 즉, decay term을 둠으로써 surface에서 비교적 먼 곳에 존재하는 머리카락이나 안경 등은 조금 더 자유롭게 생성할 수 있도록 자유도를 높여줄 수도 있게 됩니다.
+
+아래 그림은 같은 FLAME parameter를 활용하여 다른 이미지들을 만든 결과입니다. 같은 FLAME parameter를 활용했음에도 $L_{prior}$가 없으니 얼굴 형태나 생김새가 많이 달라지는 것을 확인할 수 있습니다. 동시에 full pipeline에서는, 얼굴 형태나 표정은 유지되면서도 머리 스타일, 안경 등의 feature가 자유도 높게 생성되는 것도 신기하네요.
+
+![Alt text](/assets/img/posts/omni/ablation_lprior.png){: width="80%""}{:data-align="center"}
+
+$L_{prior}$를 통해 coarse-level expression은 control할 수 있지만, 눈 깜빡임 같은 detail한 expression까지 control하기는 어렵다고 합니다. 이러한 표정 변화는 이미지 상에서의 변화는 크지만, geometry가 크게 변하는 것은 아니기 때문에 volume density 값을 학습시키는 $L_{prior}$가 감지하기는 어렵기 때문입니다. 또한, 입 주변처럼 근육이 많아서 correspondence가 복잡한 부분은 $L_{prior}$와 같은 point-wise geometric loss만으로 세세한 표정을 감지하기는 어렵다고 합니다. 그래서 이러한 부분은 geometry-level이 아닌 **image-level supervision**이 유리하게 작용한다고 합니다. 우선적으로 저자들은 학습 이미지와 그에 해당하는 label $p$를 활용하여 이미지를 입력으로 받고, FLAME parameter를 출력하는 encoder $E(I_{RGB})=(\tilde{\beta}, \tilde{\theta})$를 학습합니다. ([DECA](https://github.com/yfeng95/DECA)나 [EMOCA](https://github.com/radekd91/emoca) 같은 공개된 모델을 활용해도 될 거 같네요) 그리고 여기서 출력된 값을 활용하여 아래와 같은 loss를 걸어줍니다.
+
+![Alt text](/assets/img/posts/omni/loss_enc.png){: width="40%""}{:data-align="center"}
+
+여기서 $S$와 $J$는 각각 FLAME mesh의 vertices, 3D landmark regressor를 의미합니다. 즉, coefficients 사이의 거리와, 구축된 FLAME mesh 사이의 거리, 그리고 구축된 FLAME mesh에서 추출된 landmark 사이의 거리까지, 3중으로 loss를 걸어주는 것입니다. 실제로 아래 그림을 보면, $L_{enc}$가 존재하지 않는 경우, 같은 $p$로 생성된 이미지 사이에서도 표정이 꽤나 달라지는 것을 확인할 수 있습니다.
+
+![Alt text](/assets/img/posts/omni/ablation_lenc.png){: width="80%""}{:data-align="center"}
+
+마지막으로, 저자들은 dynamic하게 변하는 detail에 대해서 더 잘 모델링하기 위해서 MLP-decoder가 $\beta$와 $\theta$를 고려하여 conditional decoding을 하게 formula를 아래와 같이 바꿔줍니다.
+
+<div align="center">
+$(\sigma(x), f(x)|z,p) = \phi(\mathcal(M)(\bar{x}(x|p)|z), \phi(\beta, \theta)))$
+</div>
+
+***
+
+## Experiments
