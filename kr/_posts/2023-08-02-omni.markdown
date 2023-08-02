@@ -1,0 +1,60 @@
+---
+# multilingual page pair id, this must pair with translations of this page. (This name must be unique)
+lng_pair: id_omni
+title: "[논문 리뷰] OmniAvatar: Geometry-Guided Controllable 3D Head Synthesis"
+
+# post specific
+# if not specified, .name will be used from _data/owner/[language].yml
+author: SeungJun Moon
+# multiple category is not supported
+category: diffusion
+# multiple tag entries are possible
+tags: [diffusion, vae]
+use_math: true
+# thumbnail image for post
+img: "/assets/img/posts/omni/structure.png"
+# disable comments on this page
+#comments_disable: true
+
+# publish date
+date: 2023-08-02 15:35:00 +0900
+
+# seo
+# if not specified, date will be used.
+#meta_modify_date: 2022-02-10 08:11:06 +0900
+# check the meta_common_description in _data/owner/[language].yml
+#meta_description: ""
+
+# optional
+# please use the "image_viewer_on" below to enable image viewer for individual pages or posts (_posts/ or [language]/_posts folders).
+# image viewer can be enabled or disabled for all posts using the "image_viewer_posts: true" setting in _data/conf/main.yml.
+#image_viewer_on: true
+# please use the "image_lazy_loader_on" below to enable image lazy loader for individual pages or posts (_posts/ or [language]/_posts folders).
+# image lazy loader can be enabled or disabled for all posts using the "image_lazy_loader_posts: true" setting in _data/conf/main.yml.
+#image_lazy_loader_on: true
+# exclude from on site search
+#on_site_search_exclude: true
+# exclude from search engines
+#search_engine_exclude: true
+# to disable this page, simply set published: false or delete this file
+#published: false
+---
+
+<!-- outline-start -->
+
+최근 controllable face video generation 관련 논문이 조금씩 등장하고 있습니다. 이들은 FLAME 등 고전적인 3DMM 기반의 morphable face model(이것도 언젠가 시간이 되면 다루겠습니다.)과 NeRF를 결합하여 표정과 얼굴 각도 등을 세밀하게 조정할 수 있도록 합니다. 사실 SMPL, FLAME 등의 통계 기반 모델링은 비교적 예전부터 존재했습니다. 그러나 이들이 얼굴(또는 몸)의 움직임을 disentangle하게 조정할 수 있다는 큰 장점을 가지고 있었음에도, 피부 질감을 반영하여 mesh에 색을 어떻게 입힐지, 머리카락은 어떻게 모델링할지 등의 한계점으로 인해 face video generation 분야에서는 적극적으로 쓰이지 않아 왔습니다. 그러나 최근 NeRF의 등장으로 이러한 한계점들을 극복할 수 있는 가능성이 보이면서 이들을 적극적으로 활용하는 모델들이 하나 둘 등장하고 있습니다. 오늘은 그 중에서도 CVPR2023에 발표된 [OmniAvatar: Geometry-Guided Controllable 3D Head Synthesis](https://arxiv.org/abs/2303.15539)를 다뤄보려 합니다. 개인적으로 재미있는 아이디어들이 많아서 흥미로웠던 논문이었습니다.
+
+<!-- outline-end -->
+
+***
+
+## Controllable Face Generation
+
+EG3D, [GRAM](https://seungjun-moon.github.io/kr/2023-07-28-gram) 등 3D 기반 unconditional generation 연구들이 활발하게 이뤄지고 있고, 준수한 성능을 보이면서 큰 화제가 되고 있습니다. 그러나 이들은 카메라 각도 외에 사람의 생김새, 얼굴 표정 등을 조절할 수 없다는 한계점을 안고 있습니다. OmniAvatar는 이러한 한계점을 극복하기 위해서 FLAME의 framework를 차용합니다. 즉, NeRF를 활용하여 FLAME의 parameter들로 만들어진 geometry를 재현한다고 이해하면 될 거 같습니다. 저자들은 *semantic signed distance funcion(SDF)* 이라는 새로운 개념을 통해서 observation space와 canonical space 사이의 volumetric correspondence map을 정의한다고 합니다. 즉, semantic SDF를 통해 FLAME의 head geometry의 재구성 뿐만 아니라, pose와 expression **parameter를 통한 deformation**까지도 수행할 수 있다는 점입니다. 사실 [AniFaceGAN](https://arxiv.org/abs/2210.06465)을 읽으며 implicit neural representation을 통해 statiscal modeling의 geometry를 모방한다는 것도 신기했는데, 아예 volumetirc correspondence map까지 만들 수 있다는 점이 대단하네요.
+
+<details>
+	<summary>Volume density 대신 SDF를 쓰는 이유</summary>>
+	NeRF에서 주로 활용하는 volume density field의 경우 3D geometry에 대해서 충분한 constraint를 갖지 못하기 때문에, surface reconstruction 시 굉장히 noisy한 결과를 만들어낸다고 합니다. Semantic SDF의 경우 color를 추정하는 것이 아니라, 오롯이 geometry를 추정하는 것이 목적이기 때문에 noisy해질 수 있는 volume density가 아니라 SDF를 활용하지 않았을까 싶은 개인적인 추측이 듭니다. 보다 자세한 내용이 궁금하신 분은 NeurIPS2021에 발표된 논문 NeuS: Learning Neural Implicit Surfaces by Volume Rendering for Multi-view Reconstruction를 읽어보시면 도움이 될 듯 합니다.
+</details>
+
+## OmniAvatar
