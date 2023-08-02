@@ -55,7 +55,7 @@ date: 2023-08-02 15:35:00 +0900
 EG3D, [GRAM](https://seungjun-moon.github.io/kr/2023-07-28-gram) 등 3D 기반 unconditional generation 연구들이 활발하게 이뤄지고 있고, 준수한 성능을 보이면서 큰 화제가 되고 있습니다. 그러나 이들은 카메라 각도 외에 사람의 생김새, 얼굴 표정 등을 조절할 수 없다는 한계점을 안고 있습니다. OmniAvatar는 이러한 한계점을 극복하기 위해서 FLAME의 framework를 차용합니다. 즉, NeRF를 활용하여 FLAME의 parameter들로 만들어진 geometry를 재현한다고 이해하면 될 거 같습니다. 저자들은 *semantic signed distance funcion(SDF)* 이라는 새로운 개념을 통해서 observation space와 canonical space 사이의 volumetric correspondence map을 정의한다고 합니다. 즉, semantic SDF를 통해 FLAME의 head geometry의 재구성 뿐만 아니라, pose와 expression **parameter를 통한 deformation**까지도 수행할 수 있다는 점입니다. 사실 [AniFaceGAN](https://arxiv.org/abs/2210.06465)을 읽으며 implicit neural representation을 통해 statiscal modeling의 geometry를 모방한다는 것도 신기했는데, 아예 volumetirc correspondence map까지 만들 수 있다는 점이 대단하네요.
 
 <details>
-	<summary>**Volume density 대신 SDF를 쓰는 이유**</summary>>
+	<summary>** Volume density 대신 SDF를 쓰는 이유</summary>>
 	NeRF에서 주로 활용하는 volume density field의 경우 3D geometry에 대해서 충분한 constraint를 갖지 못하기 때문에, surface reconstruction 시 굉장히 noisy한 결과를 만들어낸다고 합니다. Semantic SDF의 경우 color를 추정하는 것이 아니라, 오롯이 geometry를 추정하는 것이 목적이기 때문에 noisy해질 수 있는 volume density가 아니라 SDF를 활용하지 않았을까 싶은 개인적인 추측이 듭니다. 보다 자세한 내용이 궁금하신 분은 NeurIPS2021에 발표된 논문 NeuS: Learning Neural Implicit Surfaces by Volume Rendering for Multi-view Reconstruction를 읽어보시면 도움이 될 듯 합니다.
 </details>
 
@@ -63,7 +63,7 @@ EG3D, [GRAM](https://seungjun-moon.github.io/kr/2023-07-28-gram) 등 3D 기반 u
 
 ![Alt text](/assets/img/posts/omni/structure.png){: width="100%""}{:data-align="center"}
 
-OmniAvatar의 전체적인 구조는 위와 같습니다. Generator $G$는 Gaussian 분포로부터 샘플링 된 $z$, camera pose $c$, 그리고 *FLAME 기반* shape parameter $\alpha$, expression parameter $\beta$, pose parameter $\theta$(이들을 묶어서 $p=(\alpha, \beta, \theta)$로 표현합니다)를 입력으로 받아서, FLAME parameter의 geometry에 맞는 photo-realistic human head image $I_{RGB}(z|c,p)$를 만들게 됩니다. 이 과정은 두 단계로 이루어지게 됩니다.
+OmniAvatar의 전체적인 구조는 위와 같습니다. Generator $G$는 Gaussian 분포로부터 샘플링 된 $z$, camera pose $c$, 그리고 *FLAME 기반* shape parameter $\alpha$, expression parameter $\beta$, pose parameter $\theta$(이들을 묶어서 $p=(\alpha, \beta, \theta)$로 표현합니다)를 입력으로 받아서, FLAME parameter의 geometry에 맞는 photo-realistic human head image $I_{RGB}(z\|c,p)$를 만들게 됩니다. 이 과정은 두 단계로 이루어지게 됩니다.
 
 ### Deformable Semantic SDF
 
@@ -75,6 +75,10 @@ $W(x|p=(\alpha, \beta, \theta))=(s(x|p),\bar{x})$
 
 $W$는 surface 위에서 sampling된 점들로 만든 batch $N$과, surface 위가 아닌 부분에서 sampling된 점들로 만든 batch $F$를 각각 만들고, 아래와 같은 세 개의 loss term을 통해서 학습됩니다.
 
-![Alt text](/assets/img/posts/omni/loss.png){: width="60%""}{:data-align="center"}
+![Alt text](/assets/img/posts/omni/loss_w.png){: width="60%""}{:data-align="center"}
 
 먼저 $L_{iso}$는 surface 위에서의 signed distance 값 $s(x\|p)$가 0이 되도록 하고, 이 값의 gradient $\nabla s_x(x\|p)$가 표면에서의 normal 값과 같아지도록 학습시키는 loss입니다. 그 다음 [Eikonal loss](https://dawoum.ddns.net/wiki/Signed_distance_function) $L_{eik}$는 SDF의 gradient norm이 1이 되도록, 즉 Eikonal 방정식을 만족시키게 하는 loss입니다. 사실 수식상에서 $\|\|\nabla s_{x}(x\|p)-1\|\|$ 가 아니라 $(\|\|\nabla s_{x}(x\|p)\|\|-1)^2$로 표기되는 게 맞는 거 같은데, 혹시라도 제가 잘못 생각하고 있는 거라면 알려주세요.
+
+![Alt text](/assets/img/posts/omni/semanticSDF.png){: width="60%""}{:data-align="center"}
+
+가장 신기했던(?) loss는 semantic loss $L_{sem}$이었습니다. $L_{sem}$이 바로 volumetric correspondence가 잘 학습되도록 도와주는 loss인데, surface 위 sample $x$가 canonical surface 위의 *ground-truth correspondence* $\bar{x}^\*$로 mapping될 수 있게 도와주는 함수입니다. 이 때 $\bar{x}^\*$는 $x$와 같은 barycentric coordinates를 가지고 있는 점입니다. $\bar{x}^\*$가 어떻게 ground truth가 되는지가 궁금하다면 [Generalized Barycentric Coordinates for Mesh deformation](https://pages.cs.wisc.edu/~csverma/CS777/bary.html)를 참고하시길 바랍니다. 사실 간단하게는 signed distance, 즉 $\|s(\bar{x}\|\bar{p})-s(x\|p)\|$를 minimize하는 loss를 생각해볼 수도 있습니다. 그러나 같은 signed distance를 가지는 점이 무수히 많다는 점을 생각해보면, signed distance만을 regularize하는 loss는 충분하지 않다고 합니다.
