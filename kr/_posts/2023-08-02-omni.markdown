@@ -79,6 +79,15 @@ $W$는 surface 위에서 sampling된 점들로 만든 batch $N$과, surface 위�
 
 먼저 $L_{iso}$는 surface 위에서의 signed distance 값 $s(x\|p)$가 0이 되도록 하고, 이 값의 gradient $\nabla s_x(x\|p)$가 표면에서의 normal 값과 같아지도록 학습시키는 loss입니다. 그 다음 [Eikonal loss](https://dawoum.ddns.net/wiki/Signed_distance_function) $L_{eik}$는 SDF의 gradient norm이 1이 되도록, 즉 Eikonal 방정식을 만족시키게 하는 loss입니다. 사실 수식상에서 $\|\|\nabla s_{x}(x\|p)-1\|\|$ 가 아니라 $(\|\|\nabla s_{x}(x\|p)\|\|-1)^2$로 표기되는 게 맞는 거 같은데, 혹시라도 제가 잘못 생각하고 있는 거라면 알려주세요.
 
-![Alt text](/assets/img/posts/omni/semanticSDF.png){: width="60%""}{:data-align="center"}
+![Alt text](/assets/img/posts/omni/semanticSDF.png){: width="40%""}{:data-align="center"}
 
-가장 신기했던(?) loss는 semantic loss $L_{sem}$이었습니다. $L_{sem}$이 바로 volumetric correspondence가 잘 학습되도록 도와주는 loss인데, surface 위 sample $x$가 canonical surface 위의 *ground-truth correspondence* $\bar{x}^\*$로 mapping될 수 있게 도와주는 함수입니다. 이 때 $\bar{x}^\*$는 $x$와 같은 barycentric coordinates를 가지고 있는 점입니다. $\bar{x}^\*$가 어떻게 ground truth가 되는지가 궁금하다면 [Generalized Barycentric Coordinates for Mesh deformation](https://pages.cs.wisc.edu/~csverma/CS777/bary.html)를 참고하시길 바랍니다. 사실 간단하게는 signed distance, 즉 $\|s(\bar{x}\|\bar{p})-s(x\|p)\|$를 minimize하는 loss를 생각해볼 수도 있습니다. 그러나 같은 signed distance를 가지는 점이 무수히 많다는 점을 생각해보면, signed distance만을 regularize하는 loss는 충분하지 않다고 합니다.
+가장 신기했던(?) loss는 semantic loss $L_{sem}$이었습니다. $L_{sem}$이 바로 volumetric correspondence가 잘 학습되도록 도와주는 loss인데, surface 위 sample $x$가 canonical surface 위의 *ground-truth correspondence* $\bar{x}^\*$로 mapping될 수 있게 도와주는 함수입니다. 이 때 $\bar{x}^\*$는 $x$와 같은 barycentric coordinates를 가지고 있는 점입니다. $\bar{x}^\*$가 어떻게 ground truth가 되는지가 궁금하다면 [Generalized Barycentric Coordinates for Mesh deformation](https://pages.cs.wisc.edu/~csverma/CS777/bary.html)를 참고하시길 바랍니다. 사실 간단하게는 signed distance, 즉 $\|\|s(\bar{x}\|\bar{p})-s(x\|p)\|\|$를 minimize하는 loss를 생각해볼 수도 있습니다. 그러나 같은 signed distance를 가지는 점이 무수히 많다는 점을 생각해보면, signed distance만을 regularize하는 loss는 충분하지 않다고 합니다.
+
+$W$는 large corpus of 3D FLAME로 미리 training 해둔다고 합니다.
+
+### 3D-Aware GAN
+
+이제 $W$를 통해서 observation space에서의 $x$를 canonical space $\bar{x}$로 mapping하는 함수는 익혔습니다. 이제 이 위에서 rendering만 하면 되는데, 우리는 만들어진 얼굴의 형상이 canonicalized FLAME parameter $\bar{p}$가 만들어낸 mesh와 geometry가 최대한 유사하기를 바랍니다. 앞에서 $W$를 통해서 열심히 deformation까지 해뒀는데, 정작 Volume Rendering을 하고 나니 완전히 다른 모양의 얼굴이 나오면 속상하지 않을까요? 이를 방지하기 위해서 우리는 volume rendering에서의 출력값 volume density $\sigma$에 대해서 아래와 같은 loss를 걸어줍니다.
+
+![Alt text](/assets/img/posts/omni/loss_prior.png){: width="60%""}{:data-align="center"}
+
