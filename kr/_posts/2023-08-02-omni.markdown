@@ -89,7 +89,7 @@ $W$는 large corpus of 3D FLAME로 미리 training 해둔다고 합니다.
 
 이제 $W$를 통해서 observation space에서의 $x$를 canonical space $\bar{x}$로 mapping하는 함수는 익혔습니다. 이제 이 위에서 rendering만 하면 되는데, 우리는 만들어진 얼굴의 형상이 canonicalized FLAME parameter $\bar{p}$가 만들어낸 mesh와 geometry가 최대한 유사하기를 바랍니다. 앞에서 $W$를 통해서 열심히 deformation까지 해뒀는데, 정작 Volume Rendering을 하고 나니 완전히 다른 모양의 얼굴이 나오면 속상하지 않을까요? 이를 방지하기 위해서 우리는 volume rendering에서의 출력값 volume density $\sigma$에 대해서 아래와 같은 loss를 걸어줍니다.
 
-![Alt text](/assets/img/posts/omni/loss_prior.png){: width="40%""}{:data-align="center"}
+![Alt text](/assets/img/posts/omni/loss_prior.png){: width="60%""}{:data-align="center"}
 
 FLAME parameter의 geometric prior를 따르라고 해서 prior loss인 거 같습니다. 식이 복잡해보이는데, 사실 굉장히 단순합니다. 우선 volume renderer의 출력값 $\sigma^\*(x\|z,p)$가 $\sigma^\*(x\|p)$를 모방하도록 하고 있습니다. $\sigma^\*(x\|p)$을 설명하는 (5)번 식을 잘 봐봅시다. 우선 $s(x\|p)=0$인 경우, $\sigma^\*(x\|p)$는 $1/2\cdot\kappa$가 됩니다. 이 값이 아마 surface 표면 위에서의 volume density 기준이 될 겁니다. 그리고 $s(x\|p)$이 0보다 더 작아지는 경우, 우리는 SDF의 정의에 따라 $x$가 surface 내부로 점점 들어가고 있다고 생각할 수 있습니다. 이 경우 $\sigma^\*(x\|p)$의 값은 점점 커져서 $1/\kappa$에 수렴하게 됩니다. 반대로 $s(x\|p)$이 0보다 더 커지는 경우, 우리는 SDF의 정의에 따라 $x$가 surface에서부터 점점 멀어지고 있다고 볼 수 있습니다. 이 경우 $\sigma^\*(x\|p)$의 값은 점점 작아져서 $0$에 수렴하게 됩니다. 간단하게, SDF가 정의한 surface의 모양을 volume rendering을 통해서 reconstruct한다고 생각하시면 되겠습니다. 마지막으로, rendering 시에는 surface 표면에서의 값이 계산될 때 가장 중요하기 때문에 양의 방향이든 음의 방향이든 surface에서 멀어지는 점에 대한 계산은 중요도가 떨어지게 됩니다. 그래서 $L_{prior}$의 각 계산항 앞에는 decay term $e^{-\gamma\|s(x\|p)\|}$가 붙습니다. $\|s(x\|p)\|$ 값이 크다는 말은 그만큼 surface에서 멀다는 뜻이므로, 합리적인 decay term이라 생각되네요. 그리고 사실 여기에는 더 큰 이유가 숨어 있는데, 바로 **FLAME은 머리카락이나 안경 같은 feature는 모델링하지 못한다는 것입니다**. 즉, decay term을 둠으로써 surface에서 비교적 먼 곳에 존재하는 머리카락이나 안경 등은 조금 더 자유롭게 생성할 수 있도록 자유도를 높여줄 수도 있게 됩니다.
 
@@ -99,7 +99,7 @@ FLAME parameter의 geometric prior를 따르라고 해서 prior loss인 거 같�
 
 $L_{prior}$를 통해 coarse-level expression은 control할 수 있지만, 눈 깜빡임 같은 detail한 expression까지 control하기는 어렵다고 합니다. 이러한 표정 변화는 이미지 상에서의 변화는 크지만, geometry가 크게 변하는 것은 아니기 때문에 volume density 값을 학습시키는 $L_{prior}$가 감지하기는 어렵기 때문입니다. 또한, 입 주변처럼 근육이 많아서 correspondence가 복잡한 부분은 $L_{prior}$와 같은 point-wise geometric loss만으로 세세한 표정을 감지하기는 어렵다고 합니다. 그래서 이러한 부분은 geometry-level이 아닌 **image-level supervision**이 유리하게 작용한다고 합니다. 우선적으로 저자들은 학습 이미지와 그에 해당하는 label $p$를 활용하여 이미지를 입력으로 받고, FLAME parameter를 출력하는 encoder $E(I_{RGB})=(\tilde{\beta}, \tilde{\theta})$를 학습합니다. ([DECA](https://github.com/yfeng95/DECA)나 [EMOCA](https://github.com/radekd91/emoca) 같은 공개된 모델을 활용해도 될 거 같네요) 그리고 여기서 출력된 값을 활용하여 아래와 같은 loss를 걸어줍니다.
 
-![Alt text](/assets/img/posts/omni/loss_enc.png){: width="40%""}{:data-align="center"}
+![Alt text](/assets/img/posts/omni/loss_enc.png){: width="60%""}{:data-align="center"}
 
 여기서 $S$와 $J$는 각각 FLAME mesh의 vertices, 3D landmark regressor를 의미합니다. 즉, coefficients 사이의 거리와, 구축된 FLAME mesh 사이의 거리, 그리고 구축된 FLAME mesh에서 추출된 landmark 사이의 거리까지, 3중으로 loss를 걸어주는 것입니다. 실제로 아래 그림을 보면, $L_{enc}$가 존재하지 않는 경우, 같은 $p$로 생성된 이미지 사이에서도 표정이 꽤나 달라지는 것을 확인할 수 있습니다.
 
@@ -114,3 +114,19 @@ $(\sigma(x), f(x)|z,p) = \phi(\mathcal(M)(\bar{x}(x|p)|z), \phi(\beta, \theta)))
 ***
 
 ## Experiments
+
+OmniAvatar는 two-stage로 학습이 이루어집니다. 첫 번째 stage에서는 Gaussian sampling으로 추출한 $p$로 부터 150K개의 FLAME parameter를 만들고, 이를 활용해서 semantic SDF $W$를 학습합니다. 각 mesh에서는 앞서 언급했듯 surface 위에서의 sample와 그렇지 않은 sample을 각각 추출해야 하는데, 저자들은 각각 4K개씩 추출합니다. 이 점들을 활용하여 $W$를 학습하고, 두 번째 stage를 학습할 때에는 freeze해둡니다. 두 번째 stage는 70,000장의 FFHQ로 학습을 진행하고, 각각의 이미지에서 camera pose와 FLAME parameter를 estimate한다고 합니다.
+
+Quantitative comparison은 아래와 같습니다.
+
+![Alt text](/assets/img/posts/omni/table.png){: width="100%""}{:data-align="center"}
+
+AniFaceGAN을 처음 봤을 때에도 굉장히 신기하고 잘 되는 모델이라 생각했는데, 굉장히 큰 폭으로 이겨버린 느낌이네요. FID가 5.7로 굉장히 낮은 값을 보이고 있습니다. 그 외에도 아래처럼 각 단계별로 mesh가 변해가는 모습도 흥미롭네요.
+
+![Alt text](/assets/img/posts/omni/mesh.png){: width="100%""}{:data-align="center"}
+
+## Limitations & Conclusion
+
+그러나 아직까지도 expression이 FLAME space에 굉장히 제한되어 있다고 합니다. 그래서 FLAME에서 잘 표현되지 않는, 입술을 오므리는 표정이나 볼을 부풀리는 표정 등은 잘 합성되지 않는다고 합니다. 또한, gaze control이 부재한 것 역시 한계점으로 언급하고 있습니다. 그리고, face reenactment에 사용되는 가능성에 대해서도 직접 언급하고 있는데, 이는 reference video의 FLAME tracking의 성능에 많이 의존하게 된다고 이야기 하고 있습니다.
+
+그럼에도 controllable한 face generation으로 이 정도 퀄리티를 만들어낸다는 것은 굉장히 흥미로웠습니다. 언급된 limitation들 역시 모델 자체의 한계보다는 FLAME의 표현형, FLAME estimation network의 한계라는 느낌이 더 강했던 거 같습니다 ~~일부러 그런 한계점만 언급한 걸지도 모르지만 말입니다~~ 개인적으로 implicit neural representation으로 FLAME이나 SMPL같은 statistical modeling의 mesh와 linear blend skinning 기반 deformation을 모방하는 것이 불가능할 것이라 생각했었습니다. 그러나 그렇지 않다는 연구가 하나 둘 나오고 있는 거 같네요. Statistical modeling과 implicit neural representation을 어떻게 더 잘 결합해볼지 더욱 더 생각해봐야겠습니다. 긴 글 읽어주셔서 감사합니다.
