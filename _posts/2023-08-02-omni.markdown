@@ -1,7 +1,7 @@
 ---
 # multilingual page pair id, this must pair with translations of this page. (This name must be unique)
 lng_pair: id_omni
-title: "[논문 리뷰] OmniAvatar: Geometry-Guided Controllable 3D Head Synthesis"
+title: "[Paper Review] OmniAvatar: Geometry-Guided Controllable 3D Head Synthesis"
 
 # post specific
 # if not specified, .name will be used from _data/owner/[language].yml
