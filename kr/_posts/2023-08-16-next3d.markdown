@@ -1,0 +1,51 @@
+---
+# multilingual page pair id, this must pair with translations of this page. (This name must be unique)
+lng_pair: id_next3d
+title: "[논문 리뷰] Next3D: Generative Neural Texture Rasterization for 3D-Aware Head Avatars"
+
+# post specific
+# if not specified, .name will be used from _data/owner/[language].yml
+author: SeungJun Moon
+# multiple category is not supported
+category: 3D
+# multiple tag entries are possible
+tags: [NeRF, 3D GAN]
+use_math: true
+# thumbnail image for post
+img: "/assets/img/posts/next3d/structure.png"
+# disable comments on this page
+#comments_disable: true
+
+# publish date
+date: 2023-08-16 13:16:00 +0900
+
+# seo
+# if not specified, date will be used.
+#meta_modify_date: 2022-02-10 08:11:06 +0900
+# check the meta_common_description in _data/owner/[language].yml
+#meta_description: ""
+
+# optional
+# please use the "image_viewer_on" below to enable image viewer for individual pages or posts (_posts/ or [language]/_posts folders).
+# image viewer can be enabled or disabled for all posts using the "image_viewer_posts: true" setting in _data/conf/main.yml.
+#image_viewer_on: true
+# please use the "image_lazy_loader_on" below to enable image lazy loader for individual pages or posts (_posts/ or [language]/_posts folders).
+# image lazy loader can be enabled or disabled for all posts using the "image_lazy_loader_posts: true" setting in _data/conf/main.yml.
+#image_lazy_loader_on: true
+# exclude from on site search
+#on_site_search_exclude: true
+# exclude from search engines
+#search_engine_exclude: true
+# to disable this page, simply set published: false or delete this file
+published: false
+---
+
+<!-- outline-start -->
+
+지난 번 [포스팅](https://seungjun-moon.github.io/kr/2023-08-02-omni)에 이어서 이번에도 controllable face generation에 관련된 논문을 소개하려 합니다. 이번 모델 역시 OmniAvatar나 AniFaceGAN과 유사하게 3DMM parameter를 활용하여 표정과 움직임을 세세하게 조정할 수 있는 것이 특징입니다. 이러한 종류의 모델들이 그렇듯, 핵심은 implicit volume representation이 가지고 있는 flexibility, 즉 머리카락이나 장신구 등을 표현할 수 있는 능력과 mesh-guided explicit deformation이 가지고 있는 미세한 표정 및 포즈 조정 능력을 정교하게 잘 조합하는 것입니다. Next3D는 이 둘을 잘 합칠 수 있는 *Generative Texture-Rasterized Triplanes*라는 representation 방식을 제안합니다.
+
+![Alt text](/assets/img/posts/next3d/main.png){: width="100%""}{:data-align="center"}
+
+<!-- outline-end -->
+
+***
