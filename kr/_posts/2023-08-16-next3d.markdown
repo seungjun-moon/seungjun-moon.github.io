@@ -67,4 +67,8 @@ Next3D의 구조는 아래와 같습니다. 이 중에서 특히 흥미로운 �
 ![Alt text](/assets/img/posts/next3d/uvmap.png){: width="80%""}{:data-align="center"}
 
 즉, UV mapping은 mesh 위의 점들 각각에 대응하는 3-channel RGB 값을 할당해주는 과정이라 할 수 있겠습니다. 그렇다면 이 때 RGB 값이 아닌, 보다 높은 dimension의 feature를 할당해주면 어떨까요? 이 개념이 바로 Neural Texture의 개념인데, Next3D에서는 texture network $G_{texture}$를 활용하여 RGB 값이 아니라 각 mesh 위의 점들에 32-dimension feature를 할당해줍니다.
+이렇게 하면 FLAME을 활용해 mesh를 deform할 때, 즉 표정이나 포즈를 입혀줄 때, neural texture가 이를 그대로 따라가게 됩니다. 즉, AnifaceGAN이나 OmniAvatar에서 하듯 elaborate imitation learning을 할 필요가 없어집니다.
 
+#### Rasterizing Texture
+
+그러나 이러한 deformation은 한 가지 큰 문제가 있습니다. 바로 surface 위의 지점 외에는 deformation이 정의되지 않는다는 점입니다. 이러한 문제를 Anim-NeRF나 SCARF 등의 전신 생성 모델에서는 neighborhood vertex들의 weighted LBS weight를 통해 풀었으나, 이는 inference 시 시간이 오래 걸려서인지 얼굴 domain에서는 잘 쓰지 않는 방식입니다. Next3D는 여기서 texture rasterizing이라는, 그래픽 분야에서 쓰이는 방법론을 활용합니다.
