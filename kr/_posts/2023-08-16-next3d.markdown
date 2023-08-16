@@ -37,7 +37,7 @@ date: 2023-08-16 13:16:00 +0900
 # exclude from search engines
 #search_engine_exclude: true
 # to disable this page, simply set published: false or delete this file
-published: false
+# published: false
 ---
 
 <!-- outline-start -->
@@ -48,4 +48,24 @@ published: false
 
 <!-- outline-end -->
 
+## Next3D
+
+Next3D의 구조는 아래와 같습니다. 이 중에서 특히 흥미로운 부분은 Generative Texture-Rasterized Triplanes, mouth syntesis, 그리고 static component를 위한 tri-plane branch 정도 였습니다. 각각의 역할이 무엇인지 알아보도록 하겠습니다.
+
+![Alt text](/assets/img/posts/next3d/structure.png){: width="100%""}{:data-align="center"}
+
 ***
+
+### Generative Texture-Rasterized Triplanes
+
+[OmniAvatar]((https://seungjun-moon.github.io/kr/2023-08-02-omni))에서 FLAME의 deformation을 모방한 network를 학습한 것이 흥미롭다고 얘기했었습니다. 그런데 Next3D는 여기서 한 발 더 나아가서, **FLAME의 deformation을 직접 가져다 쓰는 방법**을 고안합니다. 바로 FLAME의 deformation 정보를 담고 있는 tri-plane을 만드는 것입니다. 이 작업을 어떻게 진행하는지 한 번 천천히 살펴보겠습니다.
+
+#### Neural Texture
+
+3D mesh 자체는 공간에 대한 정보만 있을 뿐, 우리가 생각하는 색감이나 질감을 갖추고 있진 않습니다. 그래서 mesh를 활용하여 물체를 디자인하는 그래픽 분야에서는 UV texture를 mesh에 '씌워주는', UV wrapping이 널리 활용됩니다. 아래 그림처럼, 우리는 하나의 mesh와 이에 해당하는 전개도인 UV texture를 얻을 수 있습니다. 이 방법론은 FLAME을 기반으로 한 얼굴 생성 모델에서도 많이 활용되는데, DECA와 EMOCA 논문에서도 찾아볼 수 있습니다.
+
+![Alt text](/assets/img/posts/next3d/uvmap.png){: width="80%""}{:data-align="center"}
+
+즉, UV mapping은 mesh 위의 점들 각각에 대응하는 3-channel RGB 값을 할당해주는 과정이라 할 수 있겠습니다. 그렇다면 이 때 RGB 값이 아닌, 보다 높은 dimension의 feature를 할당해주면 어떨까요? 이 개념이 바로 Neural Texture의 개념인데, Next3D에서는 texture network $G_{texture}$를 활용하여 RGB 값이 아니라 각 mesh 위의 점들에 32-dimension feature를 할당해줍니다.
+
+
