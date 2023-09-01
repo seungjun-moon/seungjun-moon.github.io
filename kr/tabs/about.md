@@ -44,15 +44,13 @@ img: "/assets/img/home/profile.jpg"
 
 - **WaGI : Wavelet-based GAN Inversion for Preserving High-frequency Image Details**  
 <u>Seungjun Moon</u>\*, Chaewon Kim\*, Gyeong-Moon Park
-
-
+  
 
 - **IntereStyle: Encoding an Interest Region for Robust StyleGAN Inversion**  
 <u>Seungjun Moon</u>, Gyeong-Moon Park \\
 European Computer Vision Association (**ECCV**), 2022 \\
 Korean Conference on Computer Vision (**KCCV**), 2023 **Oral Presentation**
-
-
+  
 
 - **MASKER: Masked Keyword Regularization for Reliable Text Classification**  
 <u>Seungjun Moon</u>\*, Sangwoo Mo\* , Kimin Lee, Jaeho Lee, Jinwoo Shin  
