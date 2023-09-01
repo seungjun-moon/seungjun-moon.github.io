@@ -46,7 +46,7 @@ Hello. This is Seungjun Moon.
 <u>Seungjun Moon</u>\*, Chaewon Kim\*, Gyeong-Moon Park
 
 - **IntereStyle: Encoding an Interest Region for Robust StyleGAN Inversion**  
-<u>Seungjun Moon</u>, Gyeong-Moon Park
+<u>Seungjun Moon</u>, Gyeong-Moon Park \\
 European Computer Vision Association (**ECCV**), 2022 \\
 Korean Conference on Computer Vision (**KCCV**), 2023 **Oral Presentation**
 
