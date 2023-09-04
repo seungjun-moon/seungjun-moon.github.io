@@ -77,5 +77,8 @@ Next3D의 구조는 아래와 같습니다. 이 중에서 특히 흥미로운 �
 
 ### Mouth Syntehsis Module
 
-![Alt text](/assets/img/posts/next3d/mouth_structure.png){: width="100%""}{:data-align="center"}
+![Alt text](/assets/img/posts/next3d/mouth_structure.png){: width="80%""}{:data-align="center"}
+
+FLAME의 한계점 중 하나는 치아 부분에 해당하는 mesh가 존재하지 않는다는 점입니다. 따라서 Next3D는 이를 보완하기 위해 teeth synthesis module $G_{teeth}$을 도입합니다. 우선, landmark를 활용해서 입 주변의 tri-plane 정보를 얻어내고, 이를 $64\times64$ 크기로 resize 해줍니다. 이렇게 얻어진 teeth의 feature $f_{teeth}$는 style-modulated UNet 구조의 입력으로 활용되어, 위 그림처럼 치아에 대한 정보가 입혀진 같은 차원의 feature $f\prime_{teeth}$ 으로 출력됩니다. 이는 원래의 Tri-plane $T_{uv}$에 concat 됩니다.
+이 때, 경계 부분의 부자연스러움을 해결하기 위해 shallow-UNet-based neural blending module에 $T_{uv}$를 통과시켜서 새로운 tri-plane $T\prime_{uv}$를 얻어냅니다.
 
