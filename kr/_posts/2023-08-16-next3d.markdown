@@ -73,5 +73,9 @@ Next3D의 구조는 아래와 같습니다. 이 중에서 특히 흥미로운 �
 
 그러나 이러한 deformation은 한 가지 큰 문제가 있습니다. 바로 surface 위의 지점 외에는 deformation이 정의되지 않는다는 점입니다. 이러한 문제를 Anim-NeRF나 SCARF 등의 전신 생성 모델에서는 neighborhood vertex들의 weighted LBS weight를 통해 풀었으나, 이는 inference 시 시간이 오래 걸려서인지 얼굴 domain에서는 잘 쓰지 않는 방식입니다. Next3D는 여기서 texture rasterizing이라는, 그래픽 분야에서 쓰이는 방법론을 활용합니다. 우선, 우리는 얻어진 neural texture $T$를 FLAME을 통해 추출된 template mesh에 입혀줍니다. 원래대로라면 각 FLAME의 vertex에 3-channel RGB 값이 할당되겠지만, 우리는 $T$를 통해 UV wrapping을 진행했기 때문에 각 vertex는 32차원의 neural texture를 할당받게 됩니다. 이를 바라보는 방향에 따라 평면화를 진행하는 것이 neural texture rasterizing이라 이해하시면 되겠습니다.
 
+그러나 이를 활용한 deformation은 *surface 위 점들*에 대한 위치만을 deform해줍니다. 그러나 우리는 surface 위가 아닌, 공간 내 모든 점들에 대한 deformation이 필요합니다. 저자들은 여기서 tri-plane 표현형을 활용합니다. Neural texture가 바라보는 방향에 따라서 그 표현형이 달라짐을 활용하는 것입니다. 우리는 xy, yz, zx 각 평면에 수직하는 방향의 view direction을 활용한 rasterization을 통해 각 plane을 얻어냅니다. ($256\times256\times32$ 차원) 이를 통해, 우리는 imitative learning을 거치지 않고도 mesh의 deformation을 모방할 수 있는 tri-plane 표현형을 얻을 수 있게 됩니다.
 
+### Mouth Syntehsis Module
+
+![Alt text](/assets/img/posts/next3d/mouth_structure.png){: width="100%""}{:data-align="center"}
 
