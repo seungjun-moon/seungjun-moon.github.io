@@ -1,7 +1,7 @@
 ---
 # multilingual page pair id, this must pair with translations of this page. (This name must be unique)
 lng_pair: id_next3d
-title: "[논문 리뷰] Next3D: Generative Neural Texture Rasterization for 3D-Aware Head Avatars"
+title: "[Paper Review] Next3D: Generative Neural Texture Rasterization for 3D-Aware Head Avatars"
 
 # post specific
 # if not specified, .name will be used from _data/owner/[language].yml
