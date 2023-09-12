@@ -40,6 +40,8 @@ img: "/assets/img/home/profile.jpg"
 
 Hello. This is Seungjun Moon.
 
+***
+
 ## Publications
 
 - **WaGI : Wavelet-based GAN Inversion for Preserving High-frequency Image Details**  

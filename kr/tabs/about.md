@@ -40,6 +40,8 @@ img: "/assets/img/home/profile.jpg"
 
 안녕하세요. 문승준입니다.
 
+***
+
 ## Publications
 
 - **WaGI : Wavelet-based GAN Inversion for Preserving High-frequency Image Details**  
