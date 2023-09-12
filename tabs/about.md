@@ -57,7 +57,8 @@ Korean Conference on Computer Vision (**KCCV**), 2023 **Oral Presentation**
 - **MASKER: Masked Keyword Regularization for Reliable Text Classification**  
 <u>Seungjun Moon</u>\*, Sangwoo Mo\* , Kimin Lee, Jaeho Lee, Jinwoo Shin  
 Association for the Advancement of Artificial Intelligence (**AAAI**), 2021  
-  
+
+***
 
 ## Education
 
