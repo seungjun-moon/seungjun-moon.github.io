@@ -37,7 +37,7 @@ date: 2023-09-14 11:32:00 +0900
 # exclude from search engines
 #search_engine_exclude: true
 # to disable this page, simply set published: false or delete this file
-# published: false
+published: false
 ---
 
 <!-- outline-start -->
@@ -62,7 +62,7 @@ date: 2023-09-14 11:32:00 +0900
 
 그러나 GNN의 경우, n개의 layer 연산을 통해 n개의 hop만큼 떨어진 vertex까지만 정보를 전달할 수 있습니다.
 
-![Alt text](/assets/img/posts/hood/hop.png){: width="70%""}{:data-align="center"}
+![Alt text](/assets/img/posts/hood/hop.png){: width="50%""}{:data-align="center"}
 
 따라서, 옷의 결을 따라 빠르게 전달되는 정보(ex. 옷의 파동)를 전달하려니, 많은 연산량이 필요하게 됩니다. 이를 방지하기 위해서, HOOD는 **Hierarchical Message Passing** 또한 제시하게 됩니다.
 
@@ -84,11 +84,11 @@ Graph는 vertex $v_{i}$와 $v_{i}$와 $v_{j}$를 이어주는 edge $e_{ij}$로 �
 
 시간에 따라 옷의 모양이 변하도록, N step으로 message-passing이 일어나도록 설계되어 있습니다. 각 step에서는 $e_{ij}$가 우선적으로 아래와 같이 업데이트 됩니다.
 
-![Alt text](/assets/img/posts/hood/message_edge.png){: width="35%""}{:data-align="center"}
+![Alt text](/assets/img/posts/hood/message_e.png){: width="35%""}{:data-align="center"}
 
 그 다음, $v_{i}$는 인접한 edge feature들의 평균을 통해서 업데이트 됩니다.
 
-![Alt text](/assets/img/posts/hood/message_edge.png){: width="40%""}{:data-align="center"}
+![Alt text](/assets/img/posts/hood/message_v.png){: width="40%""}{:data-align="center"}
 
 이 때, $f_{v\rightarrow e}$, $f_{e\rightarrow v}$는 모두 MLP로 구성된 network입니다. 또한, 여기서 $e_{ij}^{body}$는 *body edge*라고 표현하는데, 아마 $v_{j}$가 body mesh를 구성하는 vertex인 경우를 말하는 거 같습니다.
 
@@ -110,6 +110,14 @@ N번의 message passing이 끝난 뒤, $v_{i}$들은 decoder MLP를 통과하여
 옷의 특성상, 한 지점에 가해진 힘은 즉각적으로 전체 옷 전체의 geometry에 영향을 줍니다. *옷을 팽팽하게 잡아당기는 경우를 생각해봅시다.* 따라서, message passing이 빠르게 되어야 하는데, 이를 위해서는 N을 굉장히 크게 설정해야 합니다. 그러나 이는 연산량을 과도하게 늘리고, 결국 inference time 저하를 일으킵니다. 따라서, 저자들은 hierarchical graph를 통해 효과적으로 message를 전달하는 방법을 제안합니다.
 
 ![Alt text](/assets/img/posts/hood/hierarchical_graph.png){: width="100%""}{:data-align="center"}
+
+Hierarchical representation을 얻기 위해 input graph를 recursive하게 coarsen하는 과정을 거칩니다. Vertex들을 coarse한 set들로 구분짓고, 그 위에서 message passing을 진행하는 방식이라 생각하면 됩니다. (Vertex를 구분하는 방법은 [여기](https://openaccess.thecvf.com/content/CVPR2023/supplemental/Grigorev_HOOD_Hierarchical_Graphs_CVPR_2023_supplemental.pdf) 참고)
+이를 통해, 우리는 각 coarse level $l$에 대해 graph를 얻을 수 있습니다. $l$이 커질수록 coarse해진다고 생각하시면 됩니다. 이 때, $l+1$ level graph에서의 vertex set $V_{l+1}$은 $V_{l}$의 proper subset이 되도록 합니다. 이는 곧이어 설명할 *Multi-level Message Passing*을 위한 장치입니다.
+
+### Multi-level Message Passing
+
+
+
 
 
 
