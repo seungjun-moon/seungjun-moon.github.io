@@ -1,0 +1,157 @@
+---
+# multilingual page pair id, this must pair with translations of this page. (This name must be unique)
+lng_pair: id_next3d
+title: "[Paper Review] HOOD: Hierarchical Graphs for Generalized modeling of Clothing Dynamics"
+
+# post specific
+# if not specified, .name will be used from _data/owner/[language].yml
+author: SeungJun Moon
+# multiple category is not supported
+category: 3D
+# multiple tag entries are possible
+tags: [cloth modeling]
+use_math: true
+# thumbnail image for post
+img: "/assets/img/posts/hood/structure.png"
+# disable comments on this page
+#comments_disable: true
+
+# publish date
+date: 2023-09-14 11:32:00 +0900
+
+# seo
+# if not specified, date will be used.
+#meta_modify_date: 2022-02-10 08:11:06 +0900
+# check the meta_common_description in _data/owner/[language].yml
+#meta_description: ""
+
+# optional
+# please use the "image_viewer_on" below to enable image viewer for individual pages or posts (_posts/ or [language]/_posts folders).
+# image viewer can be enabled or disabled for all posts using the "image_viewer_posts: true" setting in _data/conf/main.yml.
+#image_viewer_on: true
+# please use the "image_lazy_loader_on" below to enable image lazy loader for individual pages or posts (_posts/ or [language]/_posts folders).
+# image lazy loader can be enabled or disabled for all posts using the "image_lazy_loader_posts: true" setting in _data/conf/main.yml.
+#image_lazy_loader_on: true
+# exclude from on site search
+#on_site_search_exclude: true
+# exclude from search engines
+#search_engine_exclude: true
+# to disable this page, simply set published: false or delete this file
+# published: false
+---
+
+<!-- outline-start -->
+
+그동안의 포스팅과는 조금 동떨어진 주제이지만, 옷을 집중해서 모델링하는 Garment Modeling에 최근 매력을 느끼고 있어서 포스팅하게 되었습니다. SMPL에 대한 기본적인 지식이 없다면 이번 포스팅을 이해하시는 데에 조금 어려움이 있으실 듯 하니, 먼저 공부하고 오시는 걸 추천드립니다.
+
+![Alt text](/assets/img/posts/hood/main.png){: width="100%""}{:data-align="center"}
+
+<!-- outline-end -->
+
+## Motivation
+
+디지털 휴먼을 만드는 데에 있어서 고품질 사람 생성만큼 중요한 게 옷 생성이라 생각합니다. ~~알몸을 만들 것이 아니라면 말입니다.~~ 대부분의 3D 기반 최근 디지털 휴먼을 만드는 방법론들은 NeRF를 활용해 옷을 만드는데, 현재의 NeRF 구조로는 옷의 deformation을 모두 표현하는 것이 무리라고 보입니다. 현실적으로 옷의 주름이나 디테일을 NeRF의 deformation으로 모두 표현하기를 바라는 건, 지금의 모델들에서 더 정교하게 설계된 loss term이 등장하기 전까지는 어려울 듯 합니다.
+
+그래서 garment modeling을 들여다 보게 되었습니다만, 기존의 garment modeling은 아래와 같은 접근법과 한계점을 가지고 있습니다.
+
+- **Physical-Based Simulation (PBS)** : 말 그대로 물리 기반 시뮬레이션을 돌리는 방법입니다. 흔히 CG 작업이라 알고 있는 그것입니다. 아시다시피 수작업이 몹시 많이 들어가고, 그에 따라 작업 시간과 비용이 높습니다.
+
+- **Deformation using Linear Blend Skinning (LBS)** : 사람의 몸을 구성하는 SMPL mesh의 deformation을 활용하여 옷의 deformation을 계산하는 방법입니다. Garment modeling 분야에서 유명한 [Multi-Garment Net](https://virtualhumans.mpi-inf.mpg.de/mgn/)이나 [TailorNet](https://virtualhumans.mpi-inf.mpg.de/tailornet/)에서 활용하는 방식입니다. 그러나 이러한 방법으로는 디테일을 잡기 어려울 뿐더러 tight하지 않은, loose한 옷에 대해서 잘 적용되지 않는다고 합니다.
+
+그래서 HOOD는 PBS나 LBS에 의존하지 않고, **Graph Neural Network**를 활용해서 PBS를 대체한다고 합니다. [MeshGraphNet](https://arxiv.org/abs/2010.03409)에서 이미 그 가능성을 보였기에, 해당 모델에서 아이디어를 많이 얻었다고 합니다. 저도 아직 안 읽어봐서 자세히는 모르지만, graph 내 node 별로 속도와 가속도 같은 물리적인 요소들을 계산할 수 있다고 합니다.
+
+그러나 GNN의 경우, n개의 layer 연산을 통해 n개의 hop만큼 떨어진 vertex까지만 정보를 전달할 수 있습니다.
+
+![Alt text](/assets/img/posts/hood/hop.png){: width="50%""}{:data-align="center"}
+
+따라서, 옷의 결을 따라 빠르게 전달되는 정보(ex. 옷의 파동)를 전달하려니, 많은 연산량이 필요하게 됩니다. 이를 방지하기 위해서, HOOD는 **Hierarchical Message Passing** 또한 제시하게 됩니다.
+
+## HOOD
+
+HOOD의 구조는 아래와 같습니다. 각 요소에 대해서 보다 자세하게 알아봅시다.
+
+![Alt text](/assets/img/posts/hood/structure.png){: width="100%""}{:data-align="center"}
+
+### Graph Structure
+
+Graph는 vertex $v_{i}$와 $v_{i}$와 $v_{j}$를 이어주는 edge $e_{ij}$로 구성되어 있고, 각각은 feature vector를 가지고 있습니다. 각각의 feature vector는 아래와 같습니다.
+
+- **Nodal Feature Vector** : Vertex의 type(garment인지 body인지), current state (속도, normal vector), physical properties (질량)
+
+- **Edge Feature Vector** : Garment의 canonical geometry에 대한 현재 $v_{i}$와 $v_{j}$의 상대적 위치
+
+### Message Passing
+
+시간에 따라 옷의 모양이 변하도록, N step으로 message-passing이 일어나도록 설계되어 있습니다. 각 step에서는 $e_{ij}$가 우선적으로 아래와 같이 업데이트 됩니다.
+
+![Alt text](/assets/img/posts/hood/message_e.png){: width="35%""}{:data-align="center"}
+
+그 다음, $v_{i}$는 인접한 edge feature들의 평균을 통해서 업데이트 됩니다.
+
+![Alt text](/assets/img/posts/hood/message_v.png){: width="40%""}{:data-align="center"}
+
+이 때, $f_{v\rightarrow e}$, $f_{e\rightarrow v}$는 모두 MLP로 구성된 network입니다. 또한, 여기서 $e_{ij}^{body}$는 *body edge*라고 표현하는데, 아마 $v_{j}$가 body mesh를 구성하는 vertex인 경우를 말하는 거 같습니다.
+
+N번의 message passing이 끝난 뒤, $v_{i}$들은 decoder MLP를 통과하여 vertex별 accerleration을 얻고, 이는 최종적으로 속도와 위치를 계산하는 데에 쓰인다고 합니다. 보다 자세한 내용은 [MeshGraphNet](https://arxiv.org/abs/2010.03409)를 참고해주세요.
+
+### Extensions for Clothing
+
+옷의 경우, 탄성 등의 물리적 성질이 옷감마다 다릅니다. 저자들은 [Lamé 상수](https://en.wikipedia.org/wiki/Lam%C3%A9_parameters) $\mu$와 $\lambda$, 그리고 bending 상수 $k_{bend}$를 도입하여 이러한 디테일을 추가했습니다. 각각의 변수가 나타내는 내용은 아래와 같습니다.
+
+- $\mu$ : Stretch resistance, 즉 옷의 뻣뻣한 정도.
+- $\lambda$ : Area preservation. $\mu$와 큰 차이는 모르겠지만, local area 보존 능력 정도로 해석되지 않을까 싶음.
+- $k_{bending}$ : 접히는 정도와 주름지는 정도를 결정하는 상수
+- Density : 옷의 질량
+
+이들 각각은 vertex 별로 정의되기 때문에, 한 옷 위에서도 부분 별로 다른 질감을 가진 것 역시 표현 가능하다고 합니다.
+
+## Hierarchical Message Passing
+
+옷의 특성상, 한 지점에 가해진 힘은 즉각적으로 전체 옷 전체의 geometry에 영향을 줍니다. *옷을 팽팽하게 잡아당기는 경우를 생각해봅시다.* 따라서, message passing이 빠르게 되어야 하는데, 이를 위해서는 N을 굉장히 크게 설정해야 합니다. 그러나 이는 연산량을 과도하게 늘리고, 결국 inference time 저하를 일으킵니다. 따라서, 저자들은 hierarchical graph를 통해 효과적으로 message를 전달하는 방법을 제안합니다.
+
+![Alt text](/assets/img/posts/hood/hierarchical_graph.png){: width="80%""}{:data-align="center"}
+
+Hierarchical representation을 얻기 위해 input graph를 recursive하게 coarsen하는 과정을 거칩니다. Vertex들을 coarse한 set들로 구분짓고, 그 위에서 message passing을 진행하는 방식이라 생각하면 됩니다. (Vertex를 구분하는 방법은 [여기](https://openaccess.thecvf.com/content/CVPR2023/supplemental/Grigorev_HOOD_Hierarchical_Graphs_CVPR_2023_supplemental.pdf) 참고)
+이를 통해, 우리는 각 coarse level $l$에 대해 graph를 얻을 수 있습니다. $l$이 커질수록 coarse해진다고 생각하시면 됩니다. 이 때, $l+1$ level graph에서의 vertex set $V_{l+1}$은 $V_{l}$의 proper subset이 되도록 합니다. 이는 곧이어 설명할 *Multi-level Message Passing*을 위한 장치입니다.
+
+### Multi-level Message Passing
+
+각 messaging-passing step의 시작은 finest-level $v_{i}^{0}$를 활용하여 $e_{ij}$를 업데이트 하는 것입니다.
+
+![Alt text](/assets/img/posts/hood/hmessage_1.png){: width="35%""}{:data-align="center"}
+
+여기서 $f_{v\rightarrow e}^{l}$은 level-specific MLP입니다. 이후, 아래와 같이 vertex feature 또한 업데이트 해줍니다.
+
+![Alt text](/assets/img/posts/hood/hmessage_2.png){: width="50%""}{:data-align="center"}
+
+즉, 각 level $l$에 해당하는 graph에서 생겨난 정보들은 $f_{e\rightarrow v}$의 입력값인 $\sum_{j}e_{ij}^{l}$을 통해서 목표하는 vertex로 전달될 수 있게 됩니다. 이 때 level $l$의 그래프는 원래 그래프 (level $0$)보다 coarse하기 때문에, $N$번의 step만을 거쳐도 $N$-Hop 이상 떨어진 곳에서 생겨난 정보를 전달받을 수 있게 됩니다. 실제로 HOOD는 hierarchical message passing 덕에 15번의 step만으로도 48 edge만큼 떨어진 vertex까지도 정보를 전달할 수 있게 된다고 합니다.
+
+### Garment Model
+
+옷의 신축성, 마찰력, 몸과의 상호작용 등 다양한 물리법칙을 고려하여 garment modeling을 진행해야 합니다. 이를 위해서 활용되는 loss term들은 아래와 같습니다. 디테일한 설계 방법은 논문 본문에는 소개되어 있지 않아서, 여기서도 간단하게만 짚고 넘어가겠습니다.
+
+- $L_{stretching}$ : 옷의 늘어남에 대한 저항성 정도를 나타냄.
+- $L_{bending}$ : Discrete한 curvature의 변화에 대한 값을 나타냄.
+- $L_{collision}$ : 옷의 mesh가 몸의 mesh 안으로 들어가는, inter-penetration 현상을 방지하기 위함 (다른 garment modeling에서도 많이 활용하는 term).
+- $L_{inertia}$ : Mesh의 움직임에 관성의 영향을 더해줌.
+- $L_{friction}$ : 몸과 옷 사이의 마찰력을 모델링함.
+
+Vertex들의 previous, current, 그리고 next time step에서의 위치 $x_{t-1}$, $x_{t}$, $x_{t+1}$를 활용하여 전체 loss term $L_{total}$은 아래와 같이 정의됩니다.
+
+![Alt text](/assets/img/posts/hood/loss_total.png){: width="60%""}{:data-align="center"}
+
+학습 과정에 대한 내용은 여기서는 넘어가도록 하겠습니다.
+
+## Experimental Results
+
+![Alt text](/assets/img/posts/hood/result1.png){: width="100%""}{:data-align="center"}
+
+[Project 페이지](https://dolorousrtur.github.io/hood/)에서도 볼 수 있듯, 굉장히 좋은 결과를 보여주고 있습니다. 아무래도 물리 법칙을 적극 활용한 loss term으로 학습해서 그런지, 관성에 따른 움직임이나 찰랑임이 실제 옷과 비슷하다는 느낌을 받았습니다. 그 외에도 논문 본문을 보면 다양한 실험을 진행한 결과를 볼 수 있는데, 그 중 가장 흥미로웠던 건 real-world garment를 활용해서도 만들 수 있다는 점이었습니다. Garment inversion 정도로 부르면 되려나요. 그러나 3D scan을 통해서 얻어진 garment의 geometry를 통해서 **manual하게 mesh를 extract**한다는 점에서 아직 한계점이 명백하게 존재하는 듯 합니다. 뭔가 texture를 따와서 입혀주는 방식 등으로 구현이 안되려나, 하는 호기심이 생깁니다.
+
+![Alt text](/assets/img/posts/hood/result2.png){: width="60%""}{:data-align="center"}
+
+## Conclusion
+
+Garment modeling 분야는 최근에서야 공부를 시작하게 되었는데, 물리 엔진 및 CG와 밀접한 연관이 있는 분야다 보니 굉장히 새롭게 와닿습니다. 요새 Diffusion이나 NeRF를 활용한 가상인간 생성이 굉장히 화두가 되는데, 결국 앞서 말씀드렸듯 이 task에서는 옷을 만드는 것 또한 무시할 수 없을만큼 중요하다 생각합니다. 옷(또는 머리카락)은 사람의 몸보다 훨씬 non-rigid하기 때문에 중력이나 관성의 영향을 훨씬 많이 받을 수 밖에 없습니다. 그러나 (제가 아는 선에서는) 현재의 Diffusion 및 NeRF 모델은 이러한 부분과 접목이 활발하게 되고 있지는 않은 듯 합니다. 앞으로 Garment modeling이 어떻게 더 발전하게 될 지 궁금하네요. 긴 글 읽어주셔서 감사합니다.
+
+
