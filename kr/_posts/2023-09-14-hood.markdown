@@ -37,7 +37,7 @@ date: 2023-09-14 11:32:00 +0900
 # exclude from search engines
 #search_engine_exclude: true
 # to disable this page, simply set published: false or delete this file
-published: false
+# published: false
 ---
 
 <!-- outline-start -->
@@ -116,8 +116,42 @@ Hierarchical representation을 얻기 위해 input graph를 recursive하게 coar
 
 ### Multi-level Message Passing
 
+각 messaging-passing step의 시작은 finest-level $v_{i}^{0}$를 활용하여 $e_{ij}$를 업데이트 하는 것입니다.
 
+![Alt text](/assets/img/posts/hood/hmessage_1.png){: width="40%""}{:data-align="center"}
 
+여기서 $f_{v\rightarrow e}^{l}$은 level-specific MLP입니다. 이후, 아래와 같이 vertex feature 또한 업데이트 해줍니다.
 
+![Alt text](/assets/img/posts/hood/hmessage_2.png){: width="50%""}{:data-align="center"}
+
+즉, 각 level $l$에 해당하는 graph에서 생겨난 정보들은 $f_{e\rightarrow v}$의 입력값인 $\sum{j}e_{ij}^{l}$을 통해서 목표하는 vertex로 전달될 수 있게 됩니다. 이 때 level $l$의 그래프는 원래 그래프 (level $0$)보다 coarse하기 때문에, $N$번의 step만을 거쳐도 $N$-Hop 이상 떨어진 곳에서 생겨난 정보를 전달받을 수 있게 됩니다. 실제로 HOOD는 hierarchical message passing 덕에 15번의 step만으로도 48 edge만큼 떨어진 vertex까지도 정보를 전달할 수 있게 된다고 합니다.
+
+### Garment Model
+
+옷의 신축성, 마찰력, 몸과의 상호작용 등 다양한 물리법칙을 고려하여 garment modelling을 진행해야 합니다. 이를 위해서 활용되는 loss term들은 아래와 같습니다. 디테일한 설계 방법은 논문 본문에는 소개되어 있지 않아서, 여기서도 간단하게만 짚고 넘어가겠습니다.
+
+- $L_{stretching}$ : 옷의 늘어남에 대한 저항성 정도를 나타냄.
+- $L_{bending}$ : Discrete한 curvature의 변화에 대한 값을 나타냄.
+- $L_{collision}$ : 옷의 mesh가 몸의 mesh 안으로 들어가는, inter-penetration 현상을 방지하기 위함 (다른 garment modelling에서도 많이 활용하는 term).
+- $L_{inertia}$ : Mesh의 움직임에 관성의 영향을 더해줌.
+- $L_{friction}$ : 몸과 옷 사이의 마찰력을 모델링함.
+
+Vertex들의 previous, current, 그리고 next time step에서의 위치 $x_{t-1}$, $x_{t}$, $x_{t+1}$를 활용하여 전체 loss term $L_{total}$은 아래와 같이 정의됩니다.
+
+![Alt text](/assets/img/posts/hood/loss_total.png){: width="60%""}{:data-align="center"}
+
+학습 과정에 대한 내용은 여기서는 넘어가도록 하겠습니다.
+
+## Experimental Results
+
+![Alt text](/assets/img/posts/hood/result1.png){: width="100%""}{:data-align="center"}
+
+[Project 페이지](https://dolorousrtur.github.io/hood/)에서도 볼 수 있듯, 굉장히 좋은 결과를 보여주고 있습니다. 아무래도 물리 법칙을 적극 활용한 loss term으로 학습해서 그런지, 관성에 따른 움직임이나 찰랑임이 실제 옷과 비슷하다는 느낌을 받았습니다. 그 외에도 논문 본문을 보면 다양한 실험을 진행한 결과를 볼 수 있는데, 그 중 가장 흥미로웠던 건 real-world garment를 활용해서도 만들 수 있다는 점이었습니다. Garment inversion 정도로 부르면 되려나요. 그러나 3D scan을 통해서 얻어진 garment의 geometry를 통해서 **manual하게 mesh를 extract**한다는 점에서 아직 한계점이 명백하게 존재하는 듯 합니다. 뭔가 texture를 따와서 입혀주는 방식 등으로 구현이 안되려나, 하는 호기심이 생깁니다.
+
+![Alt text](/assets/img/posts/hood/result2.png){: width="60%""}{:data-align="center"}
+
+## Conclusion
+
+Garment Modelling 분야는 최근에서야 공부를 시작하게 되었는데, 물리 엔진 및 CG와 밀접한 연관이 있는 분야다 보니 굉장히 새롭게 와닿습니다. 요새 Diffusion이나 NeRF를 활용한 가상인간 생성이 굉장히 화두가 되는데, 결국 앞서 말씀드렸듯 이 task에서는 옷을 만드는 것 또한 무시할 수 없을만큼 중요하다 생각합니다. 옷(또는 머리카락)은 사람의 몸보다 훨씬 non-rigid하기 때문에 중력이나 관성의 영향을 훨씬 많이 받을 수 밖에 없습니다. 그러나 (제가 아는 선에서는) 현재의 Diffusion 및 NeRF 모델은 이러한 부분과 접목이 활발하게 되고 있지는 않은 듯 합니다. 앞으로 Garment Modelling이 어떻게 더 발전하게 될 지 궁금하네요. 긴 글 읽어주셔서 감사합니다.
 
 
