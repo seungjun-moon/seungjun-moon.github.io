@@ -71,10 +71,10 @@ Gaussian Splatting Network는 아래 요소들을 입력으로 받습니다.
 
 이렇게 얻어진 point cloud들의 각 point는 각각 initial Gaussian 분포의 mean이 됩니다.
 
-	*Gaussian 분포로 volume을 표현하는 이유
+	* Gaussian 분포로 volume을 표현하는 이유
 	1. Differentiable하게 volume의 분포를 표현할 수 있으며,
 	2. Mean과 variance만을 활용하여 explicit하게 표현 가능하며 (NeRF는 MLP를 통해 표현하는 implicit)
-	3. 효율적인 rasterization과 $\alpha$-blending이 가능하기 때문입니다.
+	3. 효율적인 rasterization과 alpha-blending이 가능하기 때문입니다.
 
 3차원에서의 Gaussian 분포는 아래와 같이 나타낼 수 있습니다 (상수계수 제외).
 
@@ -101,27 +101,39 @@ $G(x) = exp(-\frac{1}{2}(x-\mu)^{T}\Sigma^{-1}(x-\mu))$
 $\Sigma = RSS^{T}R^{T}$
 </div>
 
-이 때, scale matrix와 rotation matrix만을 가지고 optimize를 한다면 $\Sigma$가 positive semi-definite을 유지하도록 할 수 있습니다. 정확히는 scale matrix와 rotation matrix를 구성하는 scale vector $s\in\mathbf{R}^(3\times 1)$ 와 quaternion vector $q\in\mathbf{R}^(4\times 1)$를 optimize한다고 합니다.
+이 때, scale matrix와 rotation matrix만을 가지고 optimize를 한다면 $\Sigma$가 positive semi-definite을 유지하도록 할 수 있습니다. 정확히는 scale matrix와 rotation matrix를 구성하는 scale vector $s\in\mathbb{R}^{3\times 1}$ 와 quaternion vector $q\in\mathbb{R}^{4\times 1}$를 optimize한다고 합니다.
 
 ### Optimization
 
 Initialization이 끝난 후, optimization을 진행해야 하는 변수들은 아래와 같습니다.
 	
-	- position $p$
-	- opacity $\alpha$
-	- covariance $Sigma$, 정확히는 scale vector $s$와 quaternion vector $q$
+	- position
+	- opacity
+	- covariance, 정확히는 scale vector 와 quaternion vector
 	- sphere-harmonic function coefficient
 
-손실 함수의 구성 자체는 NeRF와 유사합니다. Mean, $\Sigma$, color $c$, $\alpha$, camera pose $V$를 입력으로 받아서 rasterize(rasterize 방법은 뒤에서 다룰게요)한 결과 $I$를 입력 이미지 $\hat{I}$와 비교하는 것입니다. 손실 함수는 $L_{1}$과 $L_{D-SSIM}$으로 이루어집니다.
+손실 함수의 구성 자체는 NeRF와 유사합니다. Mean, $\Sigma$, color $c$, $\alpha$, camera pose $V$를 입력으로 받아서 rasterize(방법은 뒤에서 다룰게요)한 결과 $I$를 입력 이미지 $\hat{I}$와 비교하는 것입니다. 손실 함수는 $L_{1}$과 $L_{D-SSIM}$으로 이루어집니다.
 
 <div align="center">
 $L = (1-\lambda)L_{1} + \lambda L_{D-SSIM}$
 </div>
 
-
-
-
 ### Adaptive Control of Gaussians
+
+그러나 위에서 설명한 optimization만을 활용해서는 Gaussian 분포의 개수를 바꿀 수는 없습니다. 그러나 처음 SfM을 통해 얻어진 점의 경우 sparse하고, 또 모든 volume을 표현하기에 부적합한 위치에 지정되었을 수도 있기에 이를 조정하는 과정이 필요합니다. 논문에서 Adaptive Control이라 지칭하는 과정은 아래 3가지 방법을 통해 분포의 개수를 조정합니다.
+
+**Remove** : Hyperparameter인 $\epsilon_{\alpha}=0.005$보다 낮은 opacity를 가진 분포를 제거하는 과정입니다. 후에 나타나는 pseudo 알고리즘을 보면 Gaussian의 공분산이 너무 커서 observe하는 공간 전체를 포함하는 경우에도 큰 의미를 지니지 못하기 때문에 remove한다고 나와 있습니다.
+
+위에 Remove가 존재하는 Gaussian을 줄여나가는 과정이라면, 이제부터 진행할 두 과정은 모두 Gaussian을 늘려나가는 과정입니다. 이 논문에서는 새로운 Gaussian을 무지성(?)으로 생성하기보단, 기존에 존재하는 Gaussian에서 **clone** 또는 **split**(합쳐서 **densify**)하는 방법론을 제시합니다. 이 때, reconstruction을 잘 하고 있지 못하는 Gaussian을 densify하는 것이 효율적일 것입니다. 이를 판단하는 기준이 바로 view-space position gradient입니다.
+제대로 reconstruct되고 있지 않는 position $p$에서의 gradient $\nabla_{p}L$ 값은 크게 나타날테니, 이를 densify 여부의 척도로 삼자는 것이 아이디어입니다.
+존재하는 Gaussian 분포에서 position들을 sample하고, 이들 각각에서 $\nabla_{p}L$를 계산합니다. 만약 이 값의 평균이 $\tau_{pos}$를 넘는다면, 이 Gaussian 주변은 제대로 reconstruct되고 있지 못하다고 해석할 수 있습니다. 이 경우, densify를 하는 것입니다.
+
+![Alt text](/assets/img/posts/gsplat/3dcovariance.png){: width="60%""}{:data-align="center"}
+
+
+
+
+
 
 ### Differentiable Tile Rasterizer
 
