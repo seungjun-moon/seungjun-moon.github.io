@@ -65,21 +65,61 @@ Gaussian Splatting Network는 아래 요소들을 입력으로 받습니다.
 
 **Structure-from-Motion Output** : Structure-from-Motion(SfM) 알고리즘은 이미지 별로 camera parameter, 그리고 point cloud를 반환합니다. 이 point cloud는 개략적인 물체의 구조를 나타낸다 생각해주시면 됩니다. 이 개념은 Nerfies를 비롯한 여러 NeRF 모델의 initialization에서도 활용되곤 했습니다. SfM이 익숙하지 않다면, 아래 Nerfies preprocessing 과정 중에 얻어진 point cloud와 camera visualization 그림을 참고해 주세요.
 
-![Alt text](/assets/img/posts/gsplat/nerfies.png){: width="70%""}{:data-align="center"}
+![Alt text](/assets/img/posts/gsplat/nerfies.png){: width="50%""}{:data-align="center"}
 
 파랑색 점이 point cloud, 빨강색 점이 camera trajectory를 나타낸다고 생각하시면 됩니다. 아무튼 이렇게 얻어진 camera 정보와 point cloud는 Gaussian Splatting Network의 입력 값으로 활용됩니다.
 
-이렇게 얻어진 point cloud들의 각 point는 각각 Gaussian 분포의 mean이 됩니다.
+이렇게 얻어진 point cloud들의 각 point는 각각 initial Gaussian 분포의 mean이 됩니다.
 
-
-	**Gaussian 분포로 volume을 표현하는 이유**
+	*Gaussian 분포로 volume을 표현하는 이유
 	1. Differentiable하게 volume의 분포를 표현할 수 있으며,
 	2. Mean과 variance만을 활용하여 explicit하게 표현 가능하며 (NeRF는 MLP를 통해 표현하는 implicit)
 	3. 효율적인 rasterization과 $\alpha$-blending이 가능하기 때문입니다.
 
+3차원에서의 Gaussian 분포는 아래와 같이 나타낼 수 있습니다 (상수계수 제외).
 
+<div align="center">
+$G(x) = exp(-\frac{1}{2}(x-\mu)^{T}\Sigma^{-1}(x-\mu))$
+</div>
+
+이러한 3차원 Gaussian은 [여기의 과정](https://xoft.tistory.com/49)을 거쳐 2D Gaussian으로 projection되어 rendering 가능하다 합니다. 이 과정은 본 포스팅에서는 생략하겠습니다.
+그렇다면 $G(x)$를 학습하기 위해서는, 가장 직관적으로는 $\mu$와 $\Sigma$를 학습시키면 될 거 같습니다. 그러나 공분산 $\Sigma$는 positive semi-definite해야만 [실제 volume을 가질 수 있습니다](https://stats.stackexchange.com/questions/239616/how-to-use-non-positive-definite-covariance-matrix-in-multivariate-gaussian-dist).
+그러나 $\Sigma$ 내의 모든 parameter를 optimize한다면 positive semi-definite가 유지될 것이라 장담할 수 없습니다.
+그래서 저자들은 $\Sigma$를 직접적으로 optimize하기 보다 $\Sigma$를 표현하는 Scale과 Rotation matrix를 활용합니다.
+
+아래 2차원 Gaussian의 visualization([출처](https://incredible.ai/statistics/2014/03/15/Multivariate-Gaussian-Distribution/))를 보면 타원으로 나타나는 것을 볼 수 있습니다.
+
+![Alt text](/assets/img/posts/gsplat/covariance.png){: width="50%""}{:data-align="center"}
+
+이 때, 타원의 중심은 mean이 결정하고, 타원의 scale과 rotation은 공분산이 결정하는 것을 볼 수 있습니다. 이는 3차원의 공간에서도 마찬가지입니다.
+
+![Alt text](/assets/img/posts/gsplat/3dcovariance.png){: width="50%""}{:data-align="center"}
+
+따라서, 위와 같은 타원형의 uncertainty ellipsoid의 모양을 결정하는 scale matrix와 rotation matrix를 활용하여 $\Sigma$를 나타낼 수 있습니다 (참고 : [A geometric interpretation of the covariance matrix](https://users.cs.utah.edu/~tch/CS4640/resources/A%20geometric%20interpretation%20of%20the%20covariance%20matrix.pdf)).
+
+<div align="center">
+$\Sigma = RSS^{T}R^{T}$
+</div>
+
+이 때, scale matrix와 rotation matrix만을 가지고 optimize를 한다면 $\Sigma$가 positive semi-definite을 유지하도록 할 수 있습니다. 정확히는 scale matrix와 rotation matrix를 구성하는 scale vector $s\in\mathbf{R}^(3\times 1)$ 와 quaternion vector $q\in\mathbf{R}^(4\times 1)$를 optimize한다고 합니다.
 
 ### Optimization
+
+Initialization이 끝난 후, optimization을 진행해야 하는 변수들은 아래와 같습니다.
+	
+	- position $p$
+	- opacity $\alpha$
+	- covariance $Sigma$, 정확히는 scale vector $s$와 quaternion vector $q$
+	- sphere-harmonic function coefficient
+
+손실 함수의 구성 자체는 NeRF와 유사합니다. Mean, $\Sigma$, color $c$, $\alpha$, camera pose $V$를 입력으로 받아서 rasterize(rasterize 방법은 뒤에서 다룰게요)한 결과 $I$를 입력 이미지 $\hat{I}$와 비교하는 것입니다. 손실 함수는 $L_{1}$과 $L_{D-SSIM}$으로 이루어집니다.
+
+<div align="center">
+$L = (1-\lambda)L_{1} + \lambda L_{D-SSIM}$
+</div>
+
+
+
 
 ### Adaptive Control of Gaussians
 
