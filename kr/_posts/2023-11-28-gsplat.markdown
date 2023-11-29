@@ -136,13 +136,53 @@ Densify를 하는 Gaussian은 크게 두 경우입니다. Gaussian이 geometric 
 
 **Split** : Over-reconstruction의 경우에서 쓰이는 방법입니다. 원래의 큰 Gaussian을 $\phi=1.6$ scale 만큼 줄어든 두 개의 Gaussian으로 나누어줍니다. 이 때, 각 Gaussian의 위치, 즉 mean 값은 원래의 큰 Gaussian의 PDF에서 sampling하여 얻어냅니다. 이 경우, Gaussian의 개수는 증가하지만 전체 volume은 거의 유사하게 유지하게 됩니다.
 
-이런 식으로 optimization을 진행하면 다른 volumetric representation들과 마찬가지로 camera 근처의 floater들로 인해 Gaussian의 개수가 무작위로 증가하고, optimization이 진행되지 않을 수 있습니다 (floater에 대해서 정확히 이해하진 못했습니다). 이를 방지하기 위해 3000번의 iteration마다 $\alpha$ 값을 0으로 초기화 해주는 전략을 활용합니다.
-
-
+이런 식으로 optimization을 진행하면 다른 volumetric representation들과 마찬가지로 camera 근처의 floater들로 인해 Gaussian의 개수가 무작위로 증가하고, optimization이 진행되지 않을 수 있습니다 (floater에 대해서 정확히 이해하진 못했습니다). 이를 방지하기 위해 3000번의 iteration마다 $\alpha$ 값을 0으로 초기화 해주는 전략을 활용합니다. 이렇게 하면 Remove 단계를 통해서 필요 없는 Gaussian들을 주기적으로 지워줄 수 있습니다. 또한, 이를 통해서 Gaussian들이 중첩되는 현상 역시 줄여줄 수 있습니다.
 
 ### Differentiable Tile Rasterizer
 
-### Multi-level Message Passing
+위처럼 얻어진 Gaussian들을 어떻게 2D image로 rasterize 시키는 지에 관한 알고리즘입니다. 논문만 봐서는 이해하기가 난해해서, [블로그](https://xoft.tistory.com/52) 글을 많이 참고해서 작성했습니다. 아래의 pseudo 알고리즘을 보면서 단계 별로 설명 드리도록 하겠습니다.
+
+![Alt text](/assets/img/posts/gsplat/pseudo_rasterize.png){: width="60%""}{:data-align="center"}
+
+#### CullGaussian
+
+주어진 camera view에서 관측 가능한 Gaussian만을 선택하는 과정입니다. 아래와 같이 [view frustrum](https://en.wikipedia.org/wiki/Viewing_frustum) 내에서 99%의 confident를 가지는 Gaussian만을 선택한다고 합니다. 또한, 저자들은 guard band라는 개념을 도입하여 extreme position에 위치한 Gaussian, e.g., mean이 near plane에 근접해 있거나 view frustrum 밖에 존재하는 경우, 들을 자동적으로 삭제한다고 합니다. 그 이유는 이러한 Gaussian들의 projection된 2D covariance를 계산하는 것이 unstable할 수 있기 때문이라고 합니다.
+
+![Alt text](/assets/img/posts/gsplat/frustrum.png){: width="60%""}{:data-align="center"}
+
+#### ScreenspaceGaussians
+
+3D Gaussian을 rasterize하여 2D, 즉 Screen space로 projection하는 함수입니다. Viewing transform W가 주어졌을 때, cameara coordinates에서의 covariance $\Sigma^{'}$은 다음과 같이 나타내어 집니다.
+
+<div align="center">
+$\Sigma^{'} = JW\Sigma W^{T}J^{T}$
+</div>
+
+이 때, J는 projective transformation의 Jacobian입니다. 이 때, $\Sigma^{'}$의 thrid row와 column을 skip하면, 같은 property를 가지고 있는 $2\times2$ covariance matrix를 얻을 수 있음을 증명한 [논문](https://www.cs.umd.edu/~zwicker/publications/EWASplatting-TVCG02.pdf)이 있습니다. 이를 활용하여 3D Gaussian을 2D Gaussian으로 projection이 가능하다고 합니다.
+
+#### CreateTiles
+
+이미지를 $16\times16$, 총 256개의 tile로 쪼개줍니다.
+
+#### DuplicateWithKeys
+
+각 Gaussian을 overlap되는 tile의 개수만큼 instance화 시킵니다. 각 instance들은 view space depth와 tile ID를 조합하여 생성된 key를 할당받게 됩니다. 논문의 appendix를 참조하면 총 64bit의 사이즈로 이루어져 있으며, lower 32bit는 depth 정보를, higher 32bit는 tile ID 정보를 담고 있는다고 합니다.
+
+#### SortByKeys
+
+그 다음, 이 key들을 바탕으로 GPU [Radix sort](https://10000cow.tistory.com/entry/%EC%A0%95%EB%A0%AC-7-%EA%B8%B0%EC%88%98-%EC%A0%95%EB%A0%ACradix-sort)를 활용하여 Gaussian들을 sorting합니다. 각 tile마다 sorting은 병렬적으로 진행되며, 이를 통해 각 tile에 대해서 depth ordering한 결과를 얻을 수 있습니다. 이를 통해 더이상 pixel 별로 sorting을 활용하지 않아도 되기에 기존의 방법보다 훨씬 효율적이라고 이야기합니다.
+
+#### IdentifyTileRanges
+
+각 tile 별로 depth-sorted entry에서 첫번째와 마지막 entry를 identify하여 list를 만듭니다. 정확히는 무슨 과정인지 설명되어 있진 않습니다.
+
+#### GetTileRange
+
+이 연산은 모든 tile에 대해서 각각 수행됩니다. 모든 타일에 대해서 IdentifyTileRanges에서 구한 range R을 읽어옵니다.
+
+#### BlendInOrder
+
+Tile마다 pixel에 대해서 view depth가 작은 순부터 큰 순으로 color와 opacity 값을 accumulate합니다. 이 과정은 기존의 NeRF와 유사하다고 생각하셔도 됩니다. Gaussian Splatting에서는 tile마다 개별 CUDA thread block을 할당하여 병렬적 처리를 통해 연산 속도를 최소화하였다고 합니다.
 
 ## Experimental Results
 
