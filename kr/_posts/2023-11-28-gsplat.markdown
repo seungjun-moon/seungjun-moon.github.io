@@ -42,14 +42,11 @@ date: 2023-11-28 16:59:00 +0900
 
 <!-- outline-start -->
 
-Intro
+이번 ICCV2023에서 발표된 Gaussian Splatting 논문이 큰 화제입니다. 기존의 instant-NGP보다 훨씬 빠른 속도를 보여줌과 동시에, NeRF 기반 모델 중 가장 좋은 성능을 보이던 Mip-NeRF보다 좋은 rendering 성능을 보이기 때문입니다. 오늘은 Gaussian Splatting이 무엇이고, 어떤 방식으로 학습 및 렌더링을 진행하는지 간략하게 알아보려 합니다.
 
 ![Alt text](/assets/img/posts/gsplat/main.png){: width="100%""}{:data-align="center"}
 
 <!-- outline-end -->
-
-## Motivation
-
 
 ## Gaussian Splatting
 
@@ -186,9 +183,11 @@ Tile마다 pixel에 대해서 view depth가 작은 순부터 큰 순으로 color
 
 ## Experimental Results
 
-TBD
+![Alt text](/assets/img/posts/gsplat/quantitative.png){: width="100%""}{:data-align="center"}
+
+다양한 SOTA NeRF들과 비교한 결과입니다. Mip-NeRF와 거의 유사한 (30K의 경우 더 좋은 성능) 성능을 보이면서 동시에 Mip-NeRF보다 1,000배 이상 빠른 속도를 보이고 있습니다. Instant-NGP에 비해서도 대략 몇 십배 빠른 속도를 보여주고 있습니다. 기존의 NeRF처럼 point별로 많은 sampling을 진행하고, 이를 integrate하는 과정이 필요없다 보니, tile rasterizer의 속도가 기존 NeRF 기반 모델들보다 훨씬 좋은 성능을 보인다 생각합니다. 보다 많은 실험 결과는 논문을 참고하시길 바랍니다.
 
 ## Conclusion
 
-TBD
+NeRF가 등장한지 불과 3년 정도 밖에 되지 않았는데 벌써 이를 대체할 만한 모델이 등장했다는 것에 놀랐습니다. Human avatar generation이 main interest인 저로서는 어서 dynamic scene에서 Gaussian Splatting이 얼마나 잘 동작할지 궁금합니다. 이미 몇몇 논문들이 Gaussian Splatting을 활용한 deformation 방법을 제시하고 있고, 이미 한 두개의 논문은 이를 활용해서 human avatar generation까지 다루고 있는 거 같습니다. 어서 dynamic scene에서의 Gaussian Splatting 논문을 읽어보고, 또 정리하러 오겠습니다. 감사합니다.
 
