@@ -124,14 +124,19 @@ $L = (1-\lambda)L_{1} + \lambda L_{D-SSIM}$
 
 **Remove** : Hyperparameter인 $\epsilon_{\alpha}=0.005$보다 낮은 opacity를 가진 분포를 제거하는 과정입니다. 후에 나타나는 pseudo 알고리즘을 보면 Gaussian의 공분산이 너무 커서 observe하는 공간 전체를 포함하는 경우에도 큰 의미를 지니지 못하기 때문에 remove한다고 나와 있습니다.
 
-위에 Remove가 존재하는 Gaussian을 줄여나가는 과정이라면, 이제부터 진행할 두 과정은 모두 Gaussian을 늘려나가는 과정입니다. 이 논문에서는 새로운 Gaussian을 무지성(?)으로 생성하기보단, 기존에 존재하는 Gaussian에서 **clone** 또는 **split**(합쳐서 **densify**)하는 방법론을 제시합니다. 이 때, reconstruction을 잘 하고 있지 못하는 Gaussian을 densify하는 것이 효율적일 것입니다. 이를 판단하는 기준이 바로 view-space position gradient입니다.
+위에 Remove가 존재하는 Gaussian을 줄여나가는 과정이라면, 이제부터 진행할 두 과정은 모두 Gaussian을 늘려나가는 과정입니다. 이 논문에서는 새로운 Gaussian을 무지성(?)으로 생성하기보단, 기존에 존재하는 Gaussian에서 **clone** 또는 **split**(두 방법론을 합쳐서 **densify**라고 부르겠습니다)하는 방법론을 제시합니다. 이 때, reconstruction을 잘 하고 있지 못하는 Gaussian을 densify하는 것이 효율적일 것입니다. 이를 판단하는 기준이 바로 view-space position gradient입니다.
 제대로 reconstruct되고 있지 않는 position $p$에서의 gradient $\nabla_{p}L$ 값은 크게 나타날테니, 이를 densify 여부의 척도로 삼자는 것이 아이디어입니다.
-존재하는 Gaussian 분포에서 position들을 sample하고, 이들 각각에서 $\nabla_{p}L$를 계산합니다. 만약 이 값의 평균이 $\tau_{pos}$를 넘는다면, 이 Gaussian 주변은 제대로 reconstruct되고 있지 못하다고 해석할 수 있습니다. 이 경우, densify를 하는 것입니다.
+존재하는 Gaussian 분포들 각각에서 position들을 sample하고, 이들 각각에서 $\nabla_{p}L$를 계산합니다. 만약 어떤 Gaussian에서 sample된 $p$들에서의 평균 $\nabla_{p}L$가 $\tau_{pos}$를 넘는다면, 이 Gaussian 주변은 제대로 reconstruct되고 있지 못하다고 해석할 수 있습니다. 이 경우, 해당 Gaussian을 densify를 하는 것입니다.
 
 ![Alt text](/assets/img/posts/gsplat/3dcovariance.png){: width="60%""}{:data-align="center"}
 
+Densify를 하는 Gaussian은 크게 두 경우입니다. Gaussian이 geometric feature를 잘 재현하지 못하는 경우 (under-reconstruction), 또는 하나의 Gaussian이 너무 넓은 범위를 커버하고 있는 경우 (over-reconstruction)입니다. 각각의 경우는 위 그림을 보시면 더 이해가 잘 되실 겁니다. 각각의 경우, 어떤 방법으로 해결할 수 있는 지 알아봅시다.
 
+**Clone** : Under-reconstruction의 경우에서 쓰이는 방법입니다. Positional gradient의 방향에 같은 크기의 Gaussian을 하나 더 복사(clone)한다고 생각하시면 됩니다. Positional gradient는 가장 reconstruct가 안되는 방향으로 향하고 있을테니, 여기에 Gaussian을 추가한다는 것은 reasonable한 방법인듯 합니다. 이 경우, Gaussian의 개수와 여기에 포함되는 전체 volume은 당연하게도 증가합니다.
 
+**Split** : Over-reconstruction의 경우에서 쓰이는 방법입니다. 원래의 큰 Gaussian을 $\phi=1.6$ scale 만큼 줄어든 두 개의 Gaussian으로 나누어줍니다. 이 때, 각 Gaussian의 위치, 즉 mean 값은 원래의 큰 Gaussian의 PDF에서 sampling하여 얻어냅니다. 이 경우, Gaussian의 개수는 증가하지만 전체 volume은 거의 유사하게 유지하게 됩니다.
+
+이런 식으로 optimization을 진행하면 다른 volumetric representation들과 마찬가지로 camera 근처의 floater들로 인해 Gaussian의 개수가 무작위로 증가하고, optimization이 진행되지 않을 수 있습니다 (floater에 대해서 정확히 이해하진 못했습니다). 이를 방지하기 위해 3000번의 iteration마다 $\alpha$ 값을 0으로 초기화 해주는 전략을 활용합니다.
 
 
 
