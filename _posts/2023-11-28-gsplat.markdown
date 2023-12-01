@@ -9,7 +9,7 @@ author: SeungJun Moon
 # multiple category is not supported
 category: 3D
 # multiple tag entries are possible
-tags: [cloth modeling]
+tags: [3D, gaussian_splatting]
 use_math: true
 # thumbnail image for post
 img: "/assets/img/posts/gsplat/structure.png"
