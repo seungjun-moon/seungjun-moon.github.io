@@ -45,7 +45,7 @@ img: "/assets/img/home/profile.jpg"
 ## Publications
 
 - **Generative Unlearning for Any Identity**  
-Juwon Seo, Seung-Hoon Lee, Tae-Young Lee, <u>Seungjun Moon</u>, Gyeong-Moon Park
+Juwon Seo, Seung-Hoon Lee, Tae-Young Lee, <u>Seungjun Moon</u>, Gyeong-Moon Park \\
 Computer Vision and Pattern Recognition (**CVPR**), 2024
 
 <br>
