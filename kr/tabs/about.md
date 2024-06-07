@@ -74,11 +74,20 @@ Association for the Advancement of Artificial Intelligence (**AAAI**), 2021
 - **KAIST** 전기 및 전자 공학과 및 수리과학과(부전공) 학사 졸업 / Feb 2019
 - **세종과학고등학교** 졸업 (2년 조기졸업) / Feb 2014
 
+***
+
 ## Patents
 
-- **딥러닝 네트워크를 이용한 얼굴 변환 방법 및 장치 (Method and apparatus for face swapping using deep learning network)**  
+- **딥러닝 기반 3차원 얼굴 움직임 생성 장치 및 방법 (APPRATUS AND METHOD FOR GENERATING 3D FACIAL MOVEMENT BASED UPON DEEP-LEARNING)**  
+강지수, <u>문승준</u>  
+KR 10-2022-0147466 / Nov 2022
+
+- **강인한 StyleGAN 반전을 위한 인코더 학습 방법**  
+<u>문승준</u>  
+KR 10-2022-0120120 / Sep 2022
+
+- **딥러닝 네트워크를 이용한 얼굴 변환 방법 및 장치**  
 강지수, 유상민, <u>문승준</u>  
 KR 10-2021-0149532 / Nov 2021
-
 
 <!-- ## Work Experience -->

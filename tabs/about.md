@@ -73,3 +73,19 @@ Association for the Advancement of Artificial Intelligence (**AAAI**), 2021
 - **KAIST**, M.S. in Electrical Engineering (advisor: Prof. Jinwoo Shin) /Aug 2020
 - **KAIST**, B.S. in Electrical Engineering & Mathmatical Sciences (minor) / Feb 2019
 - **Sejong Science High School** / Feb 2014
+
+***
+
+## Patents
+
+- **Apparatus and Method for Generating 3D Facial Movement Based Upone Deep-Learning**  
+강지수, <u>문승준</u>  
+KR 10-2022-0147466 / Nov 2022
+
+- **A Method for Training an Encoder for Robust StyleGAN Inversion**  
+<u>문승준</u>  
+KR 10-2022-0120120 / Sep 2022
+
+- **Method and Apparatus for Face Swapping Using Deep Learning Network**  
+강지수, 유상민, <u>문승준</u>  
+KR 10-2021-0149532 / Nov 2021
