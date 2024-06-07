@@ -79,13 +79,13 @@ Association for the Advancement of Artificial Intelligence (**AAAI**), 2021
 ## Patents
 
 - **Apparatus and Method for Generating 3D Facial Movement Based Upone Deep-Learning**  
-강지수, <u>문승준</u>  
+Jisu Kang, <u>Seungjun Moon</u>  
 KR 10-2022-0147466 / Nov 2022
 
 - **A Method for Training an Encoder for Robust StyleGAN Inversion**  
-<u>문승준</u>  
+<u>Seungjun Moon</u>  
 KR 10-2022-0120120 / Sep 2022
 
 - **Method and Apparatus for Face Swapping Using Deep Learning Network**  
-강지수, 유상민, <u>문승준</u>  
+Jisu Kang, Sahngmin Yoo, <u>Seungjun Moon</u>  
 KR 10-2021-0149532 / Nov 2021
