@@ -47,7 +47,7 @@ img: "/assets/img/home/profile.jpg"
 2D 기반 가상 인간 이미지 및 비디오 생성 기술 개발
 
 - **SNOW Corporation** Internship / June 2018 ~ Aug 2018  
-Transfer Learning을 활용한 Speech Recognition 성능 개
+Transfer Learning을 활용한 Speech Recognition 성능 개선
 
 - **Nexcube Corporation** Internship / Jan 2018 ~ Feb 2019  
 자연어처리 기반 영어 단어 암기 알고리즘 개발
