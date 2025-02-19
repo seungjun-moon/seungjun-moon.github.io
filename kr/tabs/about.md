@@ -41,10 +41,23 @@ img: "/assets/img/home/profile.jpg"
 ## Employment History
 
 - **Klleon** Future AI Lead / Jan 2023 ~ 
+
 3D/딥러닝 기반 디지털 휴먼 실시간 렌더링 기술 개발
+
 - **Klleon** AI Researcher / Aug 2020 ~ Dec 2022
+
 2D 기반 가상 인간 이미지 및 비디오 생성 기술 개발
+
+- **SNOW Corporation** Internship / June 2018 ~ Aug 2018
+
+Transfer Learning을 활용한 Speech Recognition 성능 개선
+
+- **Nexcube Corporation** Internship / Jan 2018 ~ Feb 2019
+
+자연어처리 기반 영어 단어 암기 알고리즘 개발
+
 - **IGLOO Security** Internship / Mar 2017 ~ Aug 2017
+
 Random Forest 알고리즘 활용 SQL Injection 탐지
 
 ***
