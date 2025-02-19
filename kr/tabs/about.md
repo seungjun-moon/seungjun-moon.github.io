@@ -40,8 +40,12 @@ img: "/assets/img/home/profile.jpg"
 
 ## Employment History
 
-- Klleon Future AI Lead / Aug 2020. ~ 
-- 
+- **Klleon** Future AI Lead / Jan 2023 ~ 
+3D/딥러닝 기반 디지털 휴먼 실시간 렌더링 기술 개발
+- **Klleon** AI Researcher / Aug 2020 ~ Dec 2022
+2D 기반 가상 인간 이미지 및 비디오 생성 기술 개발
+- **IGLOO Security** Internship / Mar 2017 ~ Aug 2017
+Random Forest 알고리즘 활용 SQL Injection 탐지
 
 ***
 
@@ -49,7 +53,7 @@ img: "/assets/img/home/profile.jpg"
 
 - **GeoAvatar: Adaptive Geometrical Gaussian Splatting for 3D Head Avatar**
 <u>Seungjun Moon</u>\*, Hahmin Lew\*, Seungeun Lee, Jisu Kang, Gyeong-Moon Park \\
-Under Review on Computer Vision and Pattern Recognition (**CVPR**), 2025
+**Under Review on** Computer Vision and Pattern Recognition (**CVPR**), 2025
 
 - **WINE: Wavelet-Guided GAN Inversion and Editing for High-Fidelity Refinement**  
 <u>Seungjun Moon</u>\*, Chaewon Kim\*, Gyeong-Moon Park \\
