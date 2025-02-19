@@ -38,29 +38,31 @@ img: "/assets/img/home/profile.jpg"
 
 {%- comment -%} Please delete below and place your page content here {%- endcomment -%}
 
-안녕하세요. 문승준입니다.
+## Employment History
+
+- Klleon Future AI Lead / Aug 2020. ~ 
+- 
 
 ***
 
 ## Publications
 
+- **GeoAvatar: Adaptive Geometrical Gaussian Splatting for 3D Head Avatar**
+<u>Seungjun Moon</u>\*, Hahmin Lew\*, Seungeun Lee, Jisu Kang, Gyeong-Moon Park \\
+Under Review on Computer Vision and Pattern Recognition (**CVPR**), 2025
+
+- **WINE: Wavelet-Guided GAN Inversion and Editing for High-Fidelity Refinement**  
+<u>Seungjun Moon</u>\*, Chaewon Kim\*, Gyeong-Moon Park \\
+Winter Conference on Applications of Computer Vision (**WACV**), 2025
+
 - **Generative Unlearning for Any Identity**  
 Juwon Seo, Seung-Hoon Lee, Tae-Young Lee, <u>Seungjun Moon</u>, Gyeong-Moon Park \\
 Computer Vision and Pattern Recognition (**CVPR**), 2024
-
-<br>
-
-- **WaGI : Wavelet-based GAN Inversion for Preserving High-frequency Image Details**  
-<u>Seungjun Moon</u>\*, Chaewon Kim\*, Gyeong-Moon Park
-
-<br>
 
 - **IntereStyle: Encoding an Interest Region for Robust StyleGAN Inversion**  
 <u>Seungjun Moon</u>, Gyeong-Moon Park \\
 European Computer Vision Association (**ECCV**), 2022 \\
 Korean Conference on Computer Vision (**KCCV**), 2023 **Oral Presentation**  
-
-<br>
 
 - **MASKER: Masked Keyword Regularization for Reliable Text Classification**  
 <u>Seungjun Moon</u>\*, Sangwoo Mo\* , Kimin Lee, Jaeho Lee, Jinwoo Shin  
@@ -88,3 +90,6 @@ Association for the Advancement of Artificial Intelligence (**AAAI**), 2021
 강지수, 유상민, <u>문승준</u>/ KR 10-2021-0149532 / Nov 2021
 
 <!-- ## Work Experience -->
+<!-- ## Miscellaneous Experience -->
+
+
