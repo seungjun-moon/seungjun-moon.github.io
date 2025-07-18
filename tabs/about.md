@@ -48,6 +48,7 @@ Hello. This is Seungjun Moon.
 
 ## Publications  
   
+<br>
   
 ###### **GeoAvatar: Adaptive Geometrical Gaussian Splatting for 3D Head Avatar**  
 <u>Seungjun Moon</u>\*, Hah Min Lew\*, Seungeun Lee, Ji-Su Kang, and Gyeong-Moon Park
@@ -67,12 +68,18 @@ Winter Conference on Applications of Computer Vision (**WACV**), 2025 | [paper](
   
 <br>
 
+###### **EPSilon: Efficient Point Sampling for Lightening of Hybrid-based 3D Avatar Generation**
+<u>Seungjun Moon</u>, Sangjoon Yu, Gyeong-Moon Park
+arxiv preprint | [paper]() / [code](https://github.com/seungjun-moon/epsilon)
+
+<br>
+
 ###### **IntereStyle: Encoding an Interest Region for Robust StyleGAN Inversion**  
 <u>Seungjun Moon</u>, Gyeong-Moon Park \\
-European Computer Vision Association (**ECCV**), 2022 \\
-Korean Conference on Computer Vision (**KCCV**), 2023 **Oral Presentation**  
+European Computer Vision Association (**ECCV**), 2022 | [paper](https://arxiv.org/abs/2209.10811)/ [code](https://github.com/seungjun-moon/interestyle) \\
+Korean Conference on Computer Vision (**KCCV**), 2023 **Oral Presentation**
 
-<br>  
+<br>
 
 ###### **MASKER: Masked Keyword Regularization for Reliable Text Classification**  
 <u>Seungjun Moon</u>\*, Sangwoo Mo\* , Kimin Lee, Jaeho Lee, Jinwoo Shin  
