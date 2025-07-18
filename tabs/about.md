@@ -47,20 +47,23 @@ Hello. This is Seungjun Moon.
 ***
 
 ## Publications  
-\\  
+  
   
 ###### **GeoAvatar: Adaptive Geometrical Gaussian Splatting for 3D Head Avatar**  
 <u>Seungjun Moon</u>\*, Hah Min Lew\*, Seungeun Lee, Ji-Su Kang, and Gyeong-Moon Park
-International Conference on Computer Vision (**ICCV**), 2025
-
-###### [**Generative Unlearning for Any Identity**](http://arxiv.org/abs/2405.09879)
-Juwon Seo, Seung-Hoon Lee, Tae-Young Lee, <u>Seungjun Moon</u>, Gyeong-Moon Park \\
-Computer Vision and Pattern Recognition (**CVPR**), 2024
+International Conference on Computer Vision (**ICCV**), 2025 | paper
 
 <br>
 
-###### **WaGI : Wavelet-based GAN Inversion for Preserving High-frequency Image Details**  
-<u>Seungjun Moon</u>\*, Chaewon Kim\*, Gyeong-Moon Park  
+###### **Generative Unlearning for Any Identity**
+Juwon Seo, Seung-Hoon Lee, Tae-Young Lee, <u>Seungjun Moon</u>, Gyeong-Moon Park  
+Computer Vision and Pattern Recognition (**CVPR**), 2024 | [paper](http://arxiv.org/abs/2405.09879)
+
+<br>
+
+###### **WINE: Wavelet-Guided GAN Inversion and Editing for High-Fidelity Refinement**  
+Chaewon Kim\*, <u>Seungjun Moon</u>\*, Gyeong-Moon Park  
+Winter Conference on Applications of Computer Vision (**WACV**), 2025 | [paper](https://arxiv.org/abs/2210.09655)
   
 <br>
 
