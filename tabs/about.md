@@ -47,32 +47,31 @@ Hello. This is Seungjun Moon.
 ***
 
 ## Publications  
-\\
-\\
+\\  
   
-### **GeoAvatar: Adaptive Geometrical Gaussian Splatting for 3D Head Avatar**  
+###### **GeoAvatar: Adaptive Geometrical Gaussian Splatting for 3D Head Avatar**  
 <u>Seungjun Moon</u>\*, Hah Min Lew\*, Seungeun Lee, Ji-Su Kang, and Gyeong-Moon Park
 International Conference on Computer Vision (**ICCV**), 2025
 
-### [**Generative Unlearning for Any Identity**](http://arxiv.org/abs/2405.09879)
+###### [**Generative Unlearning for Any Identity**](http://arxiv.org/abs/2405.09879)
 Juwon Seo, Seung-Hoon Lee, Tae-Young Lee, <u>Seungjun Moon</u>, Gyeong-Moon Park \\
 Computer Vision and Pattern Recognition (**CVPR**), 2024
 
 <br>
 
-#### **WaGI : Wavelet-based GAN Inversion for Preserving High-frequency Image Details**  
+###### **WaGI : Wavelet-based GAN Inversion for Preserving High-frequency Image Details**  
 <u>Seungjun Moon</u>\*, Chaewon Kim\*, Gyeong-Moon Park  
   
 <br>
 
-##### **IntereStyle: Encoding an Interest Region for Robust StyleGAN Inversion**  
+###### **IntereStyle: Encoding an Interest Region for Robust StyleGAN Inversion**  
 <u>Seungjun Moon</u>, Gyeong-Moon Park \\
 European Computer Vision Association (**ECCV**), 2022 \\
 Korean Conference on Computer Vision (**KCCV**), 2023 **Oral Presentation**  
 
 <br>  
 
-- **MASKER: Masked Keyword Regularization for Reliable Text Classification**  
+###### **MASKER: Masked Keyword Regularization for Reliable Text Classification**  
 <u>Seungjun Moon</u>\*, Sangwoo Mo\* , Kimin Lee, Jaeho Lee, Jinwoo Shin  
 Association for the Advancement of Artificial Intelligence (**AAAI**), 2021  
 
