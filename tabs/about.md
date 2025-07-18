@@ -42,7 +42,13 @@ Hello. This is Seungjun Moon.
 
 ***
 
+## Working Experiences
+
+***
+
 ## Publications  
+\\
+\\
   
 ### **GeoAvatar: Adaptive Geometrical Gaussian Splatting for 3D Head Avatar**  
 <u>Seungjun Moon</u>\*, Hah Min Lew\*, Seungeun Lee, Ji-Su Kang, and Gyeong-Moon Park
@@ -54,12 +60,12 @@ Computer Vision and Pattern Recognition (**CVPR**), 2024
 
 <br>
 
-- **WaGI : Wavelet-based GAN Inversion for Preserving High-frequency Image Details**  
+#### **WaGI : Wavelet-based GAN Inversion for Preserving High-frequency Image Details**  
 <u>Seungjun Moon</u>\*, Chaewon Kim\*, Gyeong-Moon Park  
   
 <br>
 
-- **IntereStyle: Encoding an Interest Region for Robust StyleGAN Inversion**  
+##### **IntereStyle: Encoding an Interest Region for Robust StyleGAN Inversion**  
 <u>Seungjun Moon</u>, Gyeong-Moon Park \\
 European Computer Vision Association (**ECCV**), 2022 \\
 Korean Conference on Computer Vision (**KCCV**), 2023 **Oral Presentation**  
