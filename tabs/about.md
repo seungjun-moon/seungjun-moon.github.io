@@ -51,7 +51,7 @@ Hello. This is Seungjun Moon.
 <br>
   
 ###### **GeoAvatar: Adaptive Geometrical Gaussian Splatting for 3D Head Avatar**  
-<u>Seungjun Moon</u>\*, Hah Min Lew\*, Seungeun Lee, Ji-Su Kang, and Gyeong-Moon Park
+<u>Seungjun Moon</u>\*, Hah Min Lew\*, Seungeun Lee, Ji-Su Kang, and Gyeong-Moon Park  
 International Conference on Computer Vision (**ICCV**), 2025 | paper  
 
 ###### **Generative Unlearning for Any Identity**
