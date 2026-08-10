@@ -6,7 +6,7 @@
 
 home:
   # enables new posts
-  new_posts: true
+  new_posts: false
   # to remove limit, please comment it
   new_posts_count_limit: 3
   # header image using img tag with different scaling.
