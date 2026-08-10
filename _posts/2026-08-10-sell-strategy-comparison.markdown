@@ -12,7 +12,7 @@ tags: [백테스트, 매도전략, 추세추종]
 img: ":stockguide/equity_drawdown.png"
 
 # publish date
-date: 2026-08-10 12:00:00 +0900
+date: 2026-08-10 09:00:00 +0900
 
 image_viewer_on: true
 image_lazy_loader_on: true
