@@ -1,7 +1,7 @@
 ---
 # multilingual page pair id, this must pair with translations of this page. (This name must be unique)
 lng_pair: id_Examples
-title: "Et Cetera Templates"
+title: "기타 템플릿"
 
 # post specific
 # if not specified, .name will be used from _data/owner/[language].yml
