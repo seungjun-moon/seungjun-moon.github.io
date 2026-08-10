@@ -187,8 +187,8 @@ side_nav_close_limit: 767px
 side_and_top_nav_buttons:
   - home:
     icon: "fa fa-home"
-  - projects:
-    icon: "fa fa-cog"
+  - post-list:
+    icon: "fa fa-pencil-square-o"
 
 # side nav toggle feature
 # when side nav is not visible and if you click top nav toggle button, side nav slides from left to right (disables top nav buttons)
