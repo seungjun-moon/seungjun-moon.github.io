@@ -12,7 +12,7 @@ tags: [백테스트, 승률, 손익비, 추세추종]
 img: ":stockguide/winrate_breakeven.png"
 
 # publish date
-date: 2026-08-10 10:45:00 +0900
+date: 2026-08-10 10:31:00 +0900
 
 image_viewer_on: true
 image_lazy_loader_on: true
